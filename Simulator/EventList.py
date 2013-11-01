@@ -5,7 +5,15 @@ from Event import Event
 class EventList(object):
     
     def __init__(self):
-        self.list = []
+        self.arrivalList = []
+		
+	def getNextEvent(self):
+		if self.arrivalList[0].timestamp > self.finishEvent.timestamp:
+			return hq.heappop(self.list)[1]
+		else
+			event = self.finishEvent
+			self.finishEvent = None
+			return event
     
 
     def getNextEvents(self):
@@ -21,7 +29,10 @@ class EventList(object):
     
     def insertEvent(self,event):
         """Insert an event in the list"""
-        hq.heappush(self.list,(event.timestamp,event))
+		if (event.type == EventType.ARRIVAL)
+			hq.heappush(self.list,(event.timestamp,event))
+		else
+			self.finishEvent = event
         
 
 

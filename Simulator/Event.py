@@ -4,7 +4,7 @@ class Event(object):
     def __init__(self,timestamp,taskInstance,eventType):
         self.taskInstance = taskInstance
         self.eventType = eventType
-        self.timestamp = timestamp        
+        self.timestamp = timestamp     
     
     def __str__(self):
         
