@@ -51,17 +51,21 @@ class Scheduler:
 		"""
 		Execute the most priority task on the scheduler.
 
-		:return: The finishing event for the new task
+		:return: The finishing event for the new task, None if there is no
+		task to run
 		:rtype: Event
 		"""
 		
-		task = self.waitingTask[0]
-		self.executingTask = self.waitingTasks[0]
+		task = self.waitingTask[0][1]
+		self.executingTask = task
 		
-		if (task.startTime == None):
-			task.startTime = self.clock
+		if (task is not None):
+			if (task.startTime == None):
+				task.startTime = self.clock
+				
+			finishingTime = self.clock + task.remainingTime
 			
-		finishingTime = self.clock + task.remainingTime
-		
-		return new Event(finishingTime, task, EventType.FINISHING)
+			return new Event(finishingTime, task, EventType.FINISHING)
+		else:
+			return None
 		
