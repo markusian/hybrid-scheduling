@@ -1,11 +1,7 @@
 class Task:
 	"""Describe a task in the simulator."""
-	id
-	firstArrivalTime
-	computationTime
-	priority
 	
-	def __init__(self, id, firstArrivalTime, computationTime, priority):
+	def __init__(self, idx, firstArrivalTime, computationTime, priority):
 		"""
 		Init the task.
 		
@@ -20,7 +16,11 @@ class Task:
 		:type priority: int
 		"""
 		
-		self.id = id
+		self.idx = idx
 		self.firstArrivalTime = firstArrivalTime
 		self.computationTime = computationTime
 		self.priority = priority
+  
+  
+  
+              
