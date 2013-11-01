@@ -1,6 +1,10 @@
 #We are using csv files for easy editing by hand
+
+#Different task types
 from HardTask import HardTask
-#from SoftTask import SoftTask
+from SoftTask import SoftTask
+
+#Needed for csv files
 import csv
 
 class InputParser(object):
