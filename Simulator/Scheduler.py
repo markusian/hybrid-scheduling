@@ -1,7 +1,12 @@
+import heapq as hq
+
 class Scheduler:
 	"""The scheduler executes tasks instance in the simulator."""
-	executingTask = None
-	clock = 0
+	
+	def __init__(self):
+		self.executingTask = None
+		self.waitingTasks = []
+		self.clock = 0
 	
 	def advanceClock(self, time):
 		"""
@@ -30,29 +35,28 @@ class Scheduler:
 		# Compute the clock
 		self.advanceClock(event.timestamp)
 		
-		# If it´s an arrival task, put the task on the CPU if it´s free
-		# or if the task is more priory
-		if (event.type == EventType.ARRIVAL) and
-			((self.executingTask is None) or 
-			(self.executingTask.priority < event.task.priority)):
-				self.switchTask(event.task)
-				
-		# If it´s a finishing event, remove the task from the scheduler
-		# and start the next one (If available)
+		if (event.type == EventType.ARRIVAL):
+			# Add the task to waiting tasks
+			hq.heappush(self.waitingTasks, (event.task.priority, event.task))
+
 		if (event.type == EventType.FINISHING):
-			pass
+			# Remove the task from waiting tasks
+			# Since it is the running task it is the most priority
+			hq.heappop(self.waitingTasks)
+			
+		# Call the scheduler
+		return self.schedule()
 				
-	def switchTask(self, task):
+	def schedule(self):
 		"""
-		Switch the task on the scheduler.
-		
-		:param task: The new task to put on the scheduler
-		:type task: TaskInstance
+		Execute the most priority task on the scheduler.
+
 		:return: The finishing event for the new task
 		:rtype: Event
 		"""
 		
-		self.executingTask = task
+		task = self.waitingTask[0]
+		self.executingTask = self.waitingTasks[0]
 		
 		if (task.startTime == None):
 			task.startTime = self.clock
