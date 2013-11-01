@@ -1,3 +1,3 @@
-class EventType
+class EventType:
 	ARRIVAL = "Arrival"
 	FINISHING = "Finishing"
