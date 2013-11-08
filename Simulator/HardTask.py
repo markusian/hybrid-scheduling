@@ -19,6 +19,6 @@ class HardTask(Task):
         :type period: int
         :type priority: int
         """
-        priority = 1.0/period  
+        priority = 1.0/float(period)
         Task.__init__(self, id, firstArrivalTime, computationTime, priority)
         self.period = period

@@ -15,52 +15,61 @@
 #Different task types
 from HardTask import HardTask
 from SoftTask import SoftTask
+from Task import Task
 
 #Needed for csv files
 import csv
 
 class InputParser(object):
-    #Parse csv file
-
+    """Parses CSV-files."""
+    
+    
     #Give input data filename as parameter
     def __init__(self, filename):
+        """
+        :param filename: Name of input file
+        :param taskList: List of tasks from input file
+        :type filename: string
+        :type filename: list
+        """
+        
         self.filename = filename
         self.taskList = []
 
+    #Returns a task list
+    def getTaskList(self):
+        return self.taskList
+
+    #Adds task to a list
+    def addTaskToList(self, task):
+        #Add task to a list if is a task-type
+        if isinstance(task, Task):
+            self.taskList.append(task)
+        
     #Create task object from a row
     def createTask(self, row):
         #Try to read row as a list
         try:
             #Hard task
             if row[0] == "hard":
-                task = HardTask(1, row[3], row[1], float(row[2]))
+                #HardTask(self, id, firstArrivalTime, computationTime, period)
+                task = HardTask(1, row[3], row[1], row[2])
             #Soft task
             elif row[0] == "soft":
+                #SoftTask(self, id, firstArrivalTime, computationTime, priority, interrarivalTime)
                 task = SoftTask(2, row[3], row[1], row[5], row[4])
-            #Task type not defined or wrong type
+            #Wrong type of task or not recognized
             else:
                 task = False
-            return task
+            #Adds task to a list
+            self.addTaskToList(task)
         #Catch the error which happens if row is not properly formed
         except IndexError:
             return False
 
-
-    #Returns a task list
-    def getTaskList(self):
-        return self.taskList
-
-    #Adds task info as a task object to a list
-    def addTaskToList(self, row):
-        #Create task object
-        task = self.createTask(row)
-        #Add task to a list if is a task-type (not false)
-        if task != False:
-            self.taskList.append(task)
     
-    #Read the data from file and return it as a list
-    #Format is: tasktype,wcet,period,firstArrivalTime,interarrivalTime
-    #First row is not passed
+    #Read the data from file
+    #Format is: tasktype,wcet,period,firstArrivalTime,interarrivalTime,priority
     def getTasksFromFile(self):
 		#Open file and create handle as fh
         with open(self.filename, 'rb') as fh:
@@ -68,7 +77,8 @@ class InputParser(object):
             reader = csv.reader(fh)
 			#Iterate through all lines
             for row in reader:
-				self.addTaskToList(row)
+                #Create a task from info
+				self.createTask(row)
 
 
 

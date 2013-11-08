@@ -3,7 +3,7 @@ from Event import Event
 from Scheduler import Scheduler
 from TaskList import TaskList
 from HardTask import HardTask
-#from Input import *
+from InputParser import InputParser
 from EventType import EventType
 from TaskInstance import TaskInstance
 
