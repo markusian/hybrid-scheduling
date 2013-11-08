@@ -1,3 +1,15 @@
+#
+#   This module reads a CSV file (example is test.csv) from a file defined in Constructor.
+#   Methods:
+#       createTask(self, row)   -   row is a line of information from CSV-file
+#       getTasksFromFile(self)  -   reads a file defined in Constructor
+#                                   uses createTask() to create tasks from formatted text
+#                                   creates a list of tasks
+#       addTaskToList(self, row)-   adds task to a list
+#       getTaskList(self)       -   returns a list of tasks
+#
+#
+
 #We are using csv files for easy editing by hand
 
 #Different task types
@@ -13,11 +25,11 @@ class InputParser(object):
     #Give input data filename as parameter
     def __init__(self, filename):
         self.filename = filename
-        self.taskInfo = []
         self.taskList = []
 
-    #Stub for creating actual tasks from info
+    #Create task object from a row
     def createTask(self, row):
+        #Try to read row as a list
         try:
             #Hard task
             if row[0] == "hard":
@@ -29,18 +41,23 @@ class InputParser(object):
             else:
                 task = False
             return task
+        #Catch the error which happens if row is not properly formed
         except IndexError:
             return False
 
 
-    
-    #Returns the task list with first row skipped
-    def getTaskInfo(self):
-        return self.taskInfo[1:]
-
+    #Returns a task list
     def getTaskList(self):
         return self.taskList
 
+    #Adds task info as a task object to a list
+    def addTaskToList(self, row):
+        #Create task object
+        task = self.createTask(row)
+        #Add task to a list if is a task-type (not false)
+        if task != False:
+            self.taskList.append(task)
+    
     #Read the data from file and return it as a list
     #Format is: tasktype,wcet,period,firstArrivalTime,interarrivalTime
     #First row is not passed
@@ -51,21 +68,14 @@ class InputParser(object):
             reader = csv.reader(fh)
 			#Iterate through all lines
             for row in reader:
-				#Create task object
-                task = self.createTask(row)
-				#Add task to a list if is a task-type (not false)
-                if task != False:
-                    self.taskList.append(task)
-                #self.taskInfo.append(row)
-                
-        #return self.taskInfo[1:]
+				self.addTaskToList(row)
 
 
-#test and print the info
+
+#USED FOR TESTING
 #ip = InputParser("test.csv")
 #ip.getTasksFromFile()
 #
 #for i in range(0, len(ip.getTaskList())):
 #    print ip.getTaskList()[i]
-
 
