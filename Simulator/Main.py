@@ -5,6 +5,7 @@ from TaskList import TaskList
 from HardTask import HardTask
 #from Input import *
 from EventType import EventType
+from TaskInstance import TaskInstance
 
 """
 NOTE:
@@ -37,7 +38,8 @@ def populateEventList(taskList,eventList):
     
     for task in taskList:
         for i in range(10):
-            event = Event(task.firstArrivalTime+i*task.period,task,EventType.ARRIVAL)
+            instance = TaskInstance(task.firstArrivalTime+i*task.period, task)
+            event = Event(task.firstArrivalTime+i*task.period,instance,EventType.ARRIVAL)
             eventList.insertEvent(event)
 
 

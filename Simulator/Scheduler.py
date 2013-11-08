@@ -4,6 +4,8 @@ from EventList import EventList
 from TaskInstance import TaskInstance
 from HardTask import HardTask
 from PriorityQueue import PriorityQueue
+# TODO : Proper import
+from Main import *
 
 class Scheduler:
     """The scheduler executes tasks instance in the simulator."""
@@ -87,31 +89,10 @@ if __name__ == "__main__":
 
     t1 = HardTask(1, 0, 1, 5)
     t2 = HardTask(2, 0, 2, 10)
-
-    ti11 = TaskInstance(0, t1)
-    ti12 = TaskInstance(5, t1)
-    ti13  = TaskInstance(10, t1)
-
-    ti21 = TaskInstance(0, t2)
-    ti22 = TaskInstance(10, t2)
-    ti23 = TaskInstance(20, t2)
-
-    e11 = Event(0, ti11, EventType.ARRIVAL)
-    e12 = Event(5, ti12, EventType.ARRIVAL)
-    e13 = Event(10, ti13, EventType.ARRIVAL)
-
-    e21 = Event(0, ti21, EventType.ARRIVAL)
-    e22 = Event(10, ti22, EventType.ARRIVAL)
-    e23 = Event(20, ti23, EventType.ARRIVAL)
+    t3 = HardTask(3, 1, 5, 5)
 
     list = EventList()
-
-    list.insertEvent(e11)
-    list.insertEvent(e12)
-    list.insertEvent(e13)
-    list.insertEvent(e21)
-    list.insertEvent(e22)
-    list.insertEvent(e23)
+    populateEventList([t1, t2], list)
 
     event = list.getNextEvent()
     while (event is not None):
