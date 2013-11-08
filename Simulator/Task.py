@@ -20,7 +20,3 @@ class Task:
 		self.firstArrivalTime = firstArrivalTime
 		self.computationTime = computationTime
 		self.priority = priority
-  
-  
-  
-              

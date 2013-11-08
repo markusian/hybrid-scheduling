@@ -1,15 +1,7 @@
 class TaskInstance:
-	"""An instance of a task (sometimes called a job)."""
-	arrivalTime = None
-	startTime = None
-	computationTime = None
-	remainingTime = None
-	finishingTime = None
-	preemptedTimes = None
+    """An instance of a task (sometimes called a job)."""
 	
-	task = None
-	
-	def __init__(self, arrivalTime, task):
+    def __init__(self, arrivalTime, task):
 		"""
 		Init the instance.
 		
@@ -21,4 +13,10 @@ class TaskInstance:
 		self.task = task
 		
 		self.computationTime = task.computationTime
-		self.remainingTime = task.remainingTime
+		self.remainingTime = task.computationTime
+		
+		self.startTime = None
+		self.finishingTime = None
+
+    def __str__(self):
+        return str(self.task.idx)

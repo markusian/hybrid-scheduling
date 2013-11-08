@@ -20,5 +20,5 @@ class HardTask(Task):
         :type priority: int
         """
         priority = 1.0/period  
-        super().__init__(self, id, firstArrivalTime, computationTime, priority)
+        Task.__init__(self, id, firstArrivalTime, computationTime, priority)
         self.period = period

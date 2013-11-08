@@ -1,40 +1,37 @@
 import heapq as hq
 from Event import Event
-
+from EventType import EventType
 
 class EventList(object):
     
     def __init__(self):
         self.arrivalList = []
-		
-	def getNextEvent(self):
-		if self.arrivalList[0].timestamp > self.finishEvent.timestamp:
-			return hq.heappop(self.list)[1]
-		else
+        self.finishEvent = None
+    
+    def getNextEvents(self):
+        """Returns a list containing the next concurrent events"""
+        if len(self.arrivalList) == 0:
+            return []
+        nextTimestamp = self.arrivalList[0][0]
+        nextEvents = [hq.heappop(self.arrivalList)[1]]
+        while (len(self.arrivalList)>0 and self.arrivalList[0][0] == nextTimestamp):
+            nextEvents.append(hq.heappop(self.arrivalList)[1])
+        return nextEvents
+
+    def getNextEvent(self):
+		if (self.finishEvent is None) or (self.arrivalList[0][1].timestamp < self.finishEvent.timestamp):
+			return hq.heappop(self.arrivalList)[1]
+		else:
 			event = self.finishEvent
 			self.finishEvent = None
 			return event
     
-
-    def getNextEvents(self):
-        """Returns a list containing the next concurrent events"""
-        if len(self.list) == 0:
-            return []
-        nextTimestamp = self.list[0][0]
-        nextEvents = [hq.heappop(self.list)[1]]
-        while (len(self.list)>0 and self.list[0][0] == nextTimestamp):
-            nextEvents.append(hq.heappop(self.list)[1])
-        return nextEvents
-        
-    
-    def insertEvent(self,event):
-        """Insert an event in the list"""
-		if (event.type == EventType.ARRIVAL)
-			hq.heappush(self.list,(event.timestamp,event))
-		else
+    def insertEvent(self, event):
+		"""Insert an event in the list"""
+		if (event.eventType == EventType.ARRIVAL):
+			hq.heappush(self.arrivalList,(event.timestamp,event))
+		elif (event.eventType == EventType.FINISHING):
 			self.finishEvent = event
-        
-
 
 if __name__=='__main__':
     
