@@ -14,7 +14,7 @@ the tasks (even the periodic one) should not arrive all at time 0
 to avoid this we could have a randomly chosen "offset" for all of them
 
 with this offset chosen randomly, for instance, between 0 and the period of
-the taks
+the tasks
 
 """
 
@@ -30,10 +30,15 @@ def fakeTasks():
 
 
 def populateEventList(taskList,eventList):
+    """ The function initializes a list of events for the event list.
+
+        At the moment it just considers the arrival times of the hard tasks
+    """
+    
     for task in taskList:
-        event = Event(task.firstArrivalTime,task,EventType.ARRIVAL)
-        eventList.insertEvent(event)
-    pass
+        for i in range(10):
+            event = Event(task.firstArrivalTime+i*task.period,task,EventType.ARRIVAL)
+            eventList.insertEvent(event)
 
 
 if __name__=='__main__':
