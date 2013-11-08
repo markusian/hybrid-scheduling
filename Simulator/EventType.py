@@ -1,3 +1,3 @@
 class EventType:
-	ARRIVAL = "Arrival"
-	FINISHING = "Finishing"
+    ARRIVAL = "Arrival"
+    FINISHING = "Finishing"
