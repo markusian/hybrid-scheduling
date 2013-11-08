@@ -18,16 +18,19 @@ class InputParser(object):
 
     #Stub for creating actual tasks from info
     def createTask(self, row):
-		#Hard task
-        if row[0] == "hard":
-            task = HardTask(1, row[3], row[1], float(row[2]))
-		#Soft task
-        elif row[0] == "soft":
-            task = SoftTask(2, row[3], row[1], row[5], row[4])
-		#Task type not defined or wrong type
-        else:
-            task = False
-        return task
+        try:
+            #Hard task
+            if row[0] == "hard":
+                task = HardTask(1, row[3], row[1], float(row[2]))
+            #Soft task
+            elif row[0] == "soft":
+                task = SoftTask(2, row[3], row[1], row[5], row[4])
+            #Task type not defined or wrong type
+            else:
+                task = False
+            return task
+        except IndexError:
+            return False
 
 
     
@@ -61,6 +64,8 @@ class InputParser(object):
 #test and print the info
 #ip = InputParser("test.csv")
 #ip.getTasksFromFile()
-
+#
 #for i in range(0, len(ip.getTaskList())):
 #    print ip.getTaskList()[i]
+
+

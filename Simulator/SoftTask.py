@@ -1,6 +1,7 @@
-class HardTask(Task):
+from Task import Task
+
+class SoftTask(Task):
 	"""Describe a soft aperiodic task in the simulator."""
-	interrarivalTime
 	
 	def __init__(self, id, firstArrivalTime, computationTime, priority,
 		interrarivalTime):
@@ -20,5 +21,5 @@ class HardTask(Task):
 		:type priority: int
 		:type interrarivalTime: function
 		"""
-		super().__init__(self, id, firstArrivalTime, computationTime, priority)
+		Task.__init__(self, id, firstArrivalTime, computationTime, priority)
 		self.interrarivalTime = interrarivalTime
