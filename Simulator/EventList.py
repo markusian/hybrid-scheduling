@@ -1,34 +1,35 @@
 import heapq as hq
 from Event import Event
 from EventType import EventType
+from PriorityQueue import PriorityQueue
 
 class EventList(object):
 
     def __init__(self):
-        self.arrivalList = []
+        self.arrivalList = PriorityQueue()
         self.finishEvent = None
 
-    def getNextEvents(self):
-        """Returns a list containing the next concurrent events"""
-        if len(self.arrivalList) == 0:
-            return []
-        nextTimestamp = self.arrivalList[0][0]
-        nextEvents = [hq.heappop(self.arrivalList)[1]]
-        while (len(self.arrivalList)>0 and self.arrivalList[0][0] == nextTimestamp):
-            nextEvents.append(hq.heappop(self.arrivalList)[1])
-        return nextEvents
+#    def getNextEvents(self):
+#        """Returns a list containing the next concurrent events"""
+#        if len(self.arrivalList) == 0:
+#            return []
+#        nextTimestamp = self.arrivalList[0][0]
+#        nextEvents = [hq.heappop(self.arrivalList)[1]]
+#        while (len(self.arrivalList)>0 and self.arrivalList[0][0] == nextTimestamp):
+#            nextEvents.append(hq.heappop(self.arrivalList)[1])
+#        return nextEvents
 
     def getNextEvent(self):
         """Returns the next Event (According to time)."""
         # TODO : It works but can find a more elegant way ;)
-        if (self.finishEvent is None) and (len(self.arrivalList) == 0):
+        if (self.finishEvent is None) and (self.arrivalList.isEmpty()):
             return None
-        elif (self.finishEvent is not None) and (len(self.arrivalList) == 0):
+        elif (self.finishEvent is not None) and (self.arrivalList.isEmpty()):
             event = self.finishEvent
             self.finishEvent = None
             return event
-        elif (self.finishEvent is None) or (self.arrivalList[0][1].timestamp < self.finishEvent.timestamp):
-            return hq.heappop(self.arrivalList)[1]
+        elif (self.finishEvent is None) or (self.arrivalList.peak().timestamp < self.finishEvent.timestamp):
+            return self.arrivalList.pop()
         else:
             event = self.finishEvent
             self.finishEvent = None
@@ -37,13 +38,13 @@ class EventList(object):
     def insertEvent(self, event):
         """Insert an event in the list"""
         if (event.eventType == EventType.ARRIVAL):
-            hq.heappush(self.arrivalList,(event.timestamp,event))
+            self.arrivalList.push(event.timestamp,event)
         elif (event.eventType == EventType.FINISHING):
             self.finishEvent = event
 
     def __str__(self):
         ret = "ARRIVING : "
-        for el in self.arrivalList:
+        for el in self.arrivalList.list:
             ret += str(el[1])
         ret += "\nFINISHING : " + str(self.finishEvent)
 

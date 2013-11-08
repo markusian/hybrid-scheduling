@@ -1,16 +1,16 @@
-import heapq as hq
 from EventType import EventType
 from Event import Event
 from EventList import EventList
 from TaskInstance import TaskInstance
 from HardTask import HardTask
+from PriorityQueue import PriorityQueue
 
 class Scheduler:
     """The scheduler executes tasks instance in the simulator."""
 
     def __init__(self):
         self.executingTask = None
-        self.waitingTasks = []
+        self.waitingTasks = PriorityQueue()
         self.clock = 0
 
     def advanceClock(self, time):
@@ -42,12 +42,12 @@ class Scheduler:
 
         if (event.eventType == EventType.ARRIVAL):
             # Add the task to waiting tasks
-            hq.heappush(self.waitingTasks, (event.taskInstance.task.priority, event.taskInstance))
+            self.waitingTasks.push(event.taskInstance.task.priority, event.taskInstance)
 
         if (event.eventType == EventType.FINISHING):
             # Remove the task from waiting tasks
             # Since it is the running task it is the most priority
-            task = hq.heappop(self.waitingTasks)[1]
+            task = self.waitingTasks.pop()
             task.finishingTime = self.clock
             # TODO : Compute the statistics
 
@@ -63,8 +63,8 @@ class Scheduler:
         :rtype: Event
         """
 
-        if (len(self.waitingTasks) > 0):
-            task = self.waitingTasks[0][1]
+        if (not self.waitingTasks.isEmpty()):
+            task = self.waitingTasks.peak()
             self.executingTask = task
 
             if (task.startTime == None):
@@ -78,7 +78,7 @@ class Scheduler:
 
     def printRunningTasks(self):
         ret = "WAITING : "
-        for el in self.waitingTasks:
+        for el in self.waitingTasks.list:
             ret += str(el[1]) + " "
         return ret
 
