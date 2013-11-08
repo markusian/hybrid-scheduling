@@ -49,8 +49,7 @@ class EventList(object):
 
         return ret
 
-if __name__=='__main__':
-
+def test_EventList():
     e1 = Event(1,23,'uno')
     e2 = Event(2,34,'due')
     e3 = Event(34,22,'33')
@@ -59,6 +58,7 @@ if __name__=='__main__':
     e6 = Event(-23,232,'asdsad')
     e3_2 = Event(34,23,'33')
     e3_3 = Event(34,24,'33')
+    
     eventList = EventList()
 
     eventList.insertEvent(e5)
@@ -72,5 +72,12 @@ if __name__=='__main__':
 
 
     for i in range(8):
-        print eventList.getNextEvents()
+        print eventList.getNextEvents()    
+    
+
+if __name__=='__main__':
+    
+    test_EventList()
+    
+
 
