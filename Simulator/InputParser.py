@@ -1,39 +1,36 @@
 #
-#   This module reads a CSV file (example is test.csv) from a file defined in Constructor.
+#   This module reads a CSV file (example is test.csv) from a file.
 #   Methods:
-#       createTask(self, row)   -   row is a line of information from CSV-file
-#       getTasksFromFile(self)  -   reads a file defined in Constructor
-#                                   uses createTask() to create tasks from formatted text
-#                                   creates a list of tasks
-#       addTaskToList(self, row)-   adds task to a list
-#       getTaskList(self)       -   returns a list of tasks
-#
+#       createTask(self, row)               -   row is a line of information from CSV-file
+#       getTasksFromFile(self, filename)    -   uses createTask() to create tasks from formatted text
+#       addTaskToList(self, row)            -   adds task to a list
+#       getTaskList(self)                   -   returns a list of tasks
 #
 
 #We are using csv files for easy editing by hand
+
+#Imports
 
 #Different task types
 from HardTask import HardTask
 from SoftTask import SoftTask
 from Task import Task
-
 #Needed for csv files
 import csv
 
+
+#Class
 class InputParser(object):
     """Parses CSV-files."""
     
     
     #Give input data filename as parameter
-    def __init__(self, filename):
+    def __init__(self):
         """
-        :param filename: Name of input file
-        :param taskList: List of tasks from input file
-        :type filename: string
+        :param taskList: List of tasks
         :type filename: list
         """
         
-        self.filename = filename
         self.taskList = []
 
     #Returns a task list
@@ -70,22 +67,26 @@ class InputParser(object):
     
     #Read the data from file
     #Format is: tasktype,wcet,period,firstArrivalTime,interarrivalTime,priority
-    def getTasksFromFile(self):
-		#Open file and create handle as fh
-        with open(self.filename, 'rb') as fh:
-			#Create reader object
-            reader = csv.reader(fh)
-			#Iterate through all lines
-            for row in reader:
-                #Create a task from info
-				self.createTask(row)
+    def getTasksFromFile(self, filename):
+		#Try to open a file and create handle as fh
+        try:
+            with open(filename, 'r') as fh:
+                #Create reader object
+                reader = csv.reader(fh)
+                #Iterate through all lines
+                for row in reader:
+                    #Create a task from info
+                    self.createTask(row)
+        #File opening error
+        except IOError:
+            return False
 
 
 
 #USED FOR TESTING
-#ip = InputParser("test.csv")
-#ip.getTasksFromFile()
-#
-#for i in range(0, len(ip.getTaskList())):
-#    print ip.getTaskList()[i]
+# ip = InputParser()
+# ip.getTasksFromFile("test.csv")
+
+# for i in range(0, len(ip.getTaskList())):
+    # print ip.getTaskList()[i]
 
