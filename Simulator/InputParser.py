@@ -18,12 +18,15 @@ class InputParser(object):
 
     #Stub for creating actual tasks from info
     def createTask(self, row):
+		#Hard task
         if row[0] == "hard":
             task = HardTask(1, row[3], row[1], float(row[2]))
+		#Soft task
         elif row[0] == "soft":
-            task = SoftTask(2, row[3], row[1], 0, row[4])
+            task = SoftTask(2, row[3], row[1], row[5], row[4])
+		#Task type not defined or wrong type
         else:
-            return False
+            task = False
         return task
 
 
@@ -39,10 +42,15 @@ class InputParser(object):
     #Format is: tasktype,wcet,period,firstArrivalTime,interarrivalTime
     #First row is not passed
     def getTasksFromFile(self):
+		#Open file and create handle as fh
         with open(self.filename, 'rb') as fh:
+			#Create reader object
             reader = csv.reader(fh)
+			#Iterate through all lines
             for row in reader:
+				#Create task object
                 task = self.createTask(row)
+				#Add task to a list if is a task-type (not false)
                 if task != False:
                     self.taskList.append(task)
                 #self.taskInfo.append(row)

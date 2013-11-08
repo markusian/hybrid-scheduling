@@ -1,8 +1,8 @@
-tasktype,wcet,period,firstArrivalTime,interarrivalTime
-hard,10,30,0,
-hard,5,20,5,
-hard,20,50,10,
-hard,15,100,15,
-soft,10,,10,30
-soft,10,,70,50
-soft,10,,150,70
+tasktype,wcet,period,firstArrivalTime,interarrivalTime,priority
+hard,10,30,0,,
+hard,5,20,5,,
+hard,20,50,10,,
+hard,15,100,15,,
+soft,10,,10,30,5
+soft,10,,70,50,2
+soft,10,,150,70,8
