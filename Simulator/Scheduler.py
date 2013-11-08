@@ -90,9 +90,14 @@ if __name__ == "__main__":
     t1 = HardTask(1, 0, 1, 5)
     t2 = HardTask(2, 0, 2, 10)
     t3 = HardTask(3, 1, 5, 5)
+    
+    htasks = InputParser()
+    htasks.getTasksFromFile("test.csv")
+    # print htasks.getHardTaskList()[2].idx
 
     list = EventList()
-    populateEventList([t1, t2], list)
+    populateEventList(htasks.getHardTaskList(), list)
+    # populateEventList([t1, t2, t3], list)
 
     event = list.getNextEvent()
     while (event is not None):
