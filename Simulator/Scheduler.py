@@ -100,12 +100,16 @@ if __name__ == "__main__":
     # populateEventList([t1, t2, t3], list)
 
     event = list.getNextEvent()
+    i = 0
     while (event is not None):
         print "CURRENT :" + str(event)
         print list
         print scheduler.printRunningTasks()
-        print
+        print 
+        i = i + 1
         newEvent = scheduler.reactToEvent(event)
         if (newEvent is not None):
             list.insertEvent(newEvent)
         event = list.getNextEvent()
+    print "Loops: " + str(i)
+    
