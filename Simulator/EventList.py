@@ -37,8 +37,8 @@ class EventList(object):
 
     def insertEvent(self, event):
         """Insert an event in the list"""
-        if (event.eventType == EventType.ARRIVAL):
-            self.arrivalList.push(event.timestamp,event)
+        if (event.eventType == EventType.SOFT_ARRIVAL or event.eventType == EventType.HARD_ARRIVAL):
+            self.arrivalList.push(event.time, event)
         elif (event.eventType == EventType.FINISHING):
             self.finishEvent = event
 

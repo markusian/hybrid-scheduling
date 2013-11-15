@@ -30,17 +30,6 @@ def fakeTasks():
     
 
 
-def populateEventList(taskList,eventList):
-    """ The function initializes a list of events for the event list.
-
-        At the moment it just considers the arrival times of the hard tasks
-    """
-    
-    for task in taskList:
-        for i in range(10):
-            instance = TaskInstance(task.firstArrivalTime+i*task.period, task)
-            event = Event(task.firstArrivalTime+i*task.period,instance,EventType.ARRIVAL)
-            eventList.insertEvent(event)
 
 
 if __name__=='__main__':

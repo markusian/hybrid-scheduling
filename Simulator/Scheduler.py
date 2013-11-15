@@ -1,80 +1,58 @@
 from EventType import EventType
 from Event import Event
 from EventList import EventList
-from TaskInstance import TaskInstance
+from Instance import Instance
 from HardTask import HardTask
 from PriorityQueue import PriorityQueue
-# TODO : Proper import
-from Main import *
 
-class Scheduler:
-    """The scheduler executes tasks instance in the simulator."""
+class Scheduler(object):
+    """
+    The scheduler executes tasks instance in the simulator.
+    Attributes :
+        active      The active task on the scheduler
+        waiting     A list of waiting tasks
+    """
 
     def __init__(self):
-        self.executingTask = None
-        self.waitingTasks = PriorityQueue()
-        self.clock = 0
+        self.active = None
+        self.waiting = PriorityQueue()
 
-    def advanceClock(self, time):
+    def execute(self, time):
         """
-        Move the clock forward.
+        Execute the scheduler for a certain time (Execute the active task if
+        there is one).
 
-        :param time: Time to advance the clock
+        :param time: Time to compute
         :type time: int
         """
 
-        diff = time - self.clock
+        if (self.active is not None):
+            self.active.execute(time)
 
-        self.clock = time
-
-        if (self.executingTask is not None):
-            self.executingTask.remainingTime -= diff
-
-    def reactToEvent(self, event):
-        """
-        Computes new events lists and perform action on the instance based on
-        an event.
-
-        :param event: The event to compute
-        :type event: Event
-        """
-
-        # Compute the clock
-        self.advanceClock(event.timestamp)
-
-        if (event.eventType == EventType.ARRIVAL):
-            # Add the task to waiting tasks
-            self.waitingTasks.push(event.taskInstance.task.priority, event.taskInstance)
-
-        if (event.eventType == EventType.FINISHING):
-            # Remove the task from waiting tasks
-            # Since it is the running task it is the most priority
-            task = self.waitingTasks.pop()
-            task.finishingTime = self.clock
-            # TODO : Compute the statistics
-
-        # Call the scheduler
-        return self.schedule()
+            if (self.active.finished()):
+                # Remove the task from the scheduler
+                self.active.finish()
+                self.active == None
 
     def schedule(self):
         """
         Execute the most priority task on the scheduler.
 
-        :return: The finishing event for the new task, None if there is no
-        task to run
-        :rtype: Event
+        :return: The time to the next interrupt (None if no task is running)
+        :rtype: int
         """
 
-        if (not self.waitingTasks.isEmpty()):
-            task = self.waitingTasks.peak()
-            self.executingTask = task
+        if (self.active is not None):
+            self.waiting.push(self.active.task.priority, self.active)
 
-            if (task.startTime == None):
-                task.startTime = self.clock
+        if (not self.waiting.isEmpty()):
+            task = self.waiting.pop()
+            self.active = task
 
-            finishingTime = self.clock + task.remainingTime
+            # If it is the first start
+            if (not task.started()):
+                task.start()
 
-            return Event(finishingTime, task, EventType.FINISHING)
         else:
             return None
 
@@ -83,6 +61,15 @@ class Scheduler:
         for el in self.waitingTasks.list:
             ret += str(el[1]) + " "
         return ret
+
+    def put(self, instance):
+        """
+        Put an instance on the scheduler in the waiting instances.
+
+        :param instance: The instance
+        :type instance: Instance
+        """
+        self.waiting.push(instance.arrivalTime, instance)
 
 if __name__ == "__main__":
     scheduler = Scheduler()

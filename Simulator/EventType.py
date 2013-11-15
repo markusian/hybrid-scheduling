@@ -1,3 +1,4 @@
 class EventType:
-    ARRIVAL = "Arrival"
+    SOFT_ARRIVAL = "Soft Arrival"
+    HARD_ARRIVAL = "Hard Arrival"
     FINISHING = "Finishing"
