@@ -38,7 +38,7 @@ def populateEventList(taskList,eventList):
     """
     
     for task in taskList:
-        for i in range(10):
+        for i in range(100):
             instance = TaskInstance(task.firstArrivalTime+i*task.period, task)
             event = Event(task.firstArrivalTime+i*task.period,instance,EventType.ARRIVAL)
             eventList.insertEvent(event)

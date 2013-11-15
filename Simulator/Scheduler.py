@@ -14,6 +14,7 @@ class Scheduler:
         self.executingTask = None
         self.waitingTasks = PriorityQueue()
         self.clock = 0
+        self.stats = ExportStats()
 
     def advanceClock(self, time):
         """
@@ -47,11 +48,12 @@ class Scheduler:
             self.waitingTasks.push(event.taskInstance.task.priority, event.taskInstance)
 
         if (event.eventType == EventType.FINISHING):
+            # Add statistics
+            self.stats.addToList(event.taskInstance, self.clock)
             # Remove the task from waiting tasks
             # Since it is the running task it is the most priority
             task = self.waitingTasks.pop()
             task.finishingTime = self.clock
-            # TODO : Compute the statistics
 
         # Call the scheduler
         return self.schedule()
@@ -101,7 +103,6 @@ if __name__ == "__main__":
 
     event = list.getNextEvent()
     i = 0
-    stats = ExportStats()
     while (event is not None):
         print "CURRENT :" + str(event)
         print list
@@ -110,14 +111,8 @@ if __name__ == "__main__":
         newEvent = scheduler.reactToEvent(event)
         if (newEvent is not None):
             list.insertEvent(newEvent)
-            if (event.eventType == EventType.FINISHING):
-                print
-                print "Times: "
-                print "ARR: " + str(event.taskInstance.arrivalTime)
-                print "FIN: " + str(scheduler.clock)
-                stats.addToList(event.taskInstance, scheduler.clock)
         event = list.getNextEvent()
         print
     print "Loops: " + str(i)
-    stats.writeToFile()
+    scheduler.stats.writeToFile()
     
