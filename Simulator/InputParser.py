@@ -1,10 +1,13 @@
 #
 #   This module reads a CSV file (example is test.csv) from a file.
 #   Methods:
-#       createTask(self, row)               -   row is a line of information from CSV-file
-#       getTasksFromFile(self, filename)    -   uses createTask() to create tasks from formatted text
-#       addTaskToList(self, row)            -   adds task to a list
+#       createTask(self, row)               -   row is a line of information from CSV-file  -   returns task or False if task could not be made
+#       getTasksFromFile(self, filename)    -   uses createTask() to create tasks from formatted text   -   returns True if reading went well
+#       addTaskToList(self, row)            -   adds task to a list     -   returns True if task was added
 #       getTaskList(self)                   -   returns a list of tasks
+#       getHardTaskList(self)               -   returns a list of hard tasks
+#       getfotTaskList(self)                -   returns a list of soft tasks
+#
 #
 
 #We are using csv files for easy editing by hand
@@ -40,18 +43,18 @@ class InputParser(object):
     #Returns only hard tasks
     def getHardTaskList(self):
         hardTaskList = []
-        for i in range(0, len(self.getTaskList())):
-            if isinstance(self.getTaskList()[i], HardTask):
-                hardTaskList.append(self.getTaskList()[i])
+        for i in range(0, len(self.taskList)):
+            if isinstance(self.taskList[i], HardTask):
+                hardTaskList.append(self.taskList[i])
         return hardTaskList
         
         
     #Returns only soft tasks
     def getSoftTaskList(self):
         softTaskList = []
-        for i in range(0, len(self.getTaskList())):
-            if isinstance(self.getTaskList()[i], SoftTask):
-                softTaskList.append(self.getTaskList()[i])
+        for i in range(0, len(self.taskList)):
+            if isinstance(self.taskList[i], SoftTask):
+                softTaskList.append(self.taskList[i])
         return softTaskList
 
     #Adds task to a list
@@ -59,6 +62,8 @@ class InputParser(object):
         #Add task to a list if is a task-type
         if isinstance(task, Task):
             self.taskList.append(task)
+            return True
+        return False
         
     #Create task object from a row
     def createTask(self, row):
@@ -74,9 +79,9 @@ class InputParser(object):
                 task = SoftTask(len(self.taskList)+1, int(row[3]), int(row[1]), int(row[5]), int(row[4]))
             #Wrong type of task or not recognized
             else:
-                task = False
-            #Adds task to a list
-            self.addTaskToList(task)
+                return False
+            #Return task
+            return task
         #Catch the error which happens if row is not properly formed
         except IndexError:
             return False
@@ -87,13 +92,13 @@ class InputParser(object):
     def getTasksFromFile(self, filename):
 		#Try to open a file and create handle as fh
         try:
-            with open(filename, "r") as fh:
+            with open(filename, "rb") as fh:
                 #Create reader object
                 reader = csv.reader(fh)
                 #Iterate through all lines
                 for row in reader:
-                    #Create a task from info
-                    self.createTask(row)
+                    #Create a task from info and add it to a list
+                    self.addTaskToList(self.createTask(row))
         #File opening error
         except IOError:
             print

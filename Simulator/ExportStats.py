@@ -1,13 +1,16 @@
 #
 #   This module writes a CSV file from tasklist.
 #   Methods:
-#       addToList(task, finishingTime)
-#       writeToFile(self, filename)
+#       addToList(task, finishingTime)  -   void
+#       writeToFile(self, filename)     -   returns True if everything went well
 #
 #
 #   This module also has StatsList class which is used to
 #   contain task and finishingTime (until task itself has it)
+#
+#
 
+#Imports
 
 #Different task types
 from HardTask import HardTask
@@ -32,13 +35,15 @@ class StatsList(object):
         
 #Exporter
 class ExportStats(object):
-
+    """Outputs task information to a CSV-file."""
+    
     def __init__(self):
         self.taskList = []
     
     #Add info to statistics list
     def addToList(self, task, clock):
-        self.taskList.append(StatsList(task, str(clock)))
+        stat = StatsList(task, str(clock))
+        self.taskList.append(stat)
     
     #Actual Filewriter
     def writeToFile(self, filename):
@@ -57,6 +62,7 @@ class ExportStats(object):
                     priority = str(self.taskList[i].getTask().task.priority)
                     #Actual writing
                     writer.writerow([arrivalTime, finishingTime, period, timeToDeadline, taskId])
+            return True
         #File opening error
         except IOError:
             print
