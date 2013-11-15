@@ -101,15 +101,23 @@ if __name__ == "__main__":
 
     event = list.getNextEvent()
     i = 0
+    stats = ExportStats()
     while (event is not None):
         print "CURRENT :" + str(event)
         print list
         print scheduler.printRunningTasks()
-        print 
         i = i + 1
         newEvent = scheduler.reactToEvent(event)
         if (newEvent is not None):
             list.insertEvent(newEvent)
+            if (event.eventType == EventType.FINISHING):
+                print
+                print "Times: "
+                print "ARR: " + str(event.taskInstance.arrivalTime)
+                print "FIN: " + str(scheduler.clock)
+                stats.addToList(event.taskInstance, scheduler.clock)
         event = list.getNextEvent()
+        print
     print "Loops: " + str(i)
+    stats.writeToFile()
     

@@ -4,6 +4,7 @@ from Scheduler import Scheduler
 from TaskList import TaskList
 from HardTask import HardTask
 from InputParser import InputParser
+from ExportStats import ExportStats
 from EventType import EventType
 from TaskInstance import TaskInstance
 

@@ -87,7 +87,7 @@ class InputParser(object):
     def getTasksFromFile(self, filename):
 		#Try to open a file and create handle as fh
         try:
-            with open(filename, 'r') as fh:
+            with open(filename, "r") as fh:
                 #Create reader object
                 reader = csv.reader(fh)
                 #Iterate through all lines
