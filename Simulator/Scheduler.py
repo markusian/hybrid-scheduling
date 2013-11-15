@@ -104,15 +104,15 @@ if __name__ == "__main__":
     event = list.getNextEvent()
     i = 0
     while (event is not None):
-        print "CURRENT :" + str(event)
-        print list
-        print scheduler.printRunningTasks()
+        #print "CURRENT :" + str(event)
+        #print list
+        #print scheduler.printRunningTasks()
         i = i + 1
         newEvent = scheduler.reactToEvent(event)
         if (newEvent is not None):
             list.insertEvent(newEvent)
         event = list.getNextEvent()
-        print
+        #print
     print "Loops: " + str(i)
-    scheduler.stats.writeToFile()
+    scheduler.stats.writeToFile("statistics.csv")
     

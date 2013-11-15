@@ -96,6 +96,12 @@ class InputParser(object):
                     self.createTask(row)
         #File opening error
         except IOError:
+            print
+            print "________________________________________"
+            print
+            print "File opening error in file " + filename
+            print "________________________________________"
+            print
             return False
 
 
