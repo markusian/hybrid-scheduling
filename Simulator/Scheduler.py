@@ -32,14 +32,13 @@ class Scheduler(object):
             if (self.active.finished()):
                 # Remove the task from the scheduler
                 self.active.finish()
-                self.active == None
+                self.active = None
+
+        self.schedule()
 
     def schedule(self):
         """
         Execute the most priority task on the scheduler.
-
-        :return: The time to the next interrupt (None if no task is running)
-        :rtype: int
         """
 
         if (self.active is not None):
@@ -52,9 +51,6 @@ class Scheduler(object):
             # If it is the first start
             if (not task.started()):
                 task.start()
-
-        else:
-            return None
 
     def printRunningTasks(self):
         ret = "WAITING : "

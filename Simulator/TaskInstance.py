@@ -1,4 +1,5 @@
 from Instance import Instance
+from Debug import Debug
 
 class TaskInstance(Instance):
     """An instance of a task (sometimes called a job)."""
@@ -28,10 +29,14 @@ class TaskInstance(Instance):
         return str(self.task.idx)
 
     def start(self):
+        if Debug.debug:
+            print "Instance started : " + str(self)
         self.startTime = self.clock.currentTime()
-        self.hasSstarted = True
+        self.hasStarted = True
 
     def finish(self):
+        if Debug.debug:
+            print "Instance finished : " + str(self)
         # TODO: Compute statistics
         pass
 
