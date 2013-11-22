@@ -10,7 +10,7 @@ class PollingServerTask(Task):
         self.period = period
         self.scheduler = scheduler
 
-    def generateEvents(self, clock, until):
+    def generateEvents(self, clock, stats, until):
         eventList = list()
         i = 0
         while i < until:

@@ -11,6 +11,7 @@ from BackgroundServerTask import BackgroundServerTask
 from BackgroundServerInstance import BackgroundServerInstance
 from PollingServerTask import PollingServerTask
 from PollingServerInstance import PollingServerInstance
+from ExportStats import ExportStats
 import logging
 logging.basicConfig(level=logging.INFO)
 
@@ -39,6 +40,7 @@ class Simulator(object):
         self.softScheduler = Scheduler(fixedPriority)
         self.eventList = EventList()
         self.clock = Clock()
+        self.stats = ExportStats()
 
     def reactToEvent(self, event):
         """
@@ -90,7 +92,7 @@ class Simulator(object):
         """
         
         for task in taskList:
-            for event in task.generateEvents(self.clock, 50):
+            for event in task.generateEvents(self.clock, self.stats, 50):
                 self.eventList.insertEvent(event)
 
 if __name__ == "__main__":
@@ -101,3 +103,5 @@ if __name__ == "__main__":
     tasks.addTaskToList(PollingServerTask(2, 5, s.softScheduler))
     s.populateEventList(tasks.getTaskList())
     s.execute()
+
+    s.stats.writeToFile("results.csv")

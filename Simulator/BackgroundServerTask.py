@@ -8,7 +8,7 @@ class BackgroundServerTask(Task):
         Task.__init__(self, "Background Server")
         self.scheduler = scheduler
 
-    def generateEvents(self, clock, until):
+    def generateEvents(self, clock, stats, until):
         instance = BackgroundServerInstance(self.scheduler)
         event = Event(0, EventType.NEW_HARD, instance)
         return [event]

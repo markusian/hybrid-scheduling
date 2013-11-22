@@ -16,11 +16,11 @@ class PeriodicTask(Task):
         self.arrivalTime = arrivalTime
         self.period = period
 
-    def generateEvents(self, clock, until):
+    def generateEvents(self, clock, stats, until):
         eventList = list()
         i = self.arrivalTime
         while i < until:
-            instance = TaskInstance(i, self.wcet, self, clock)
+            instance = TaskInstance(i, self.wcet, self, clock, stats)
             event = Event(i, EventType.NEW_HARD, instance)
             eventList.append(event)
             i += self.period

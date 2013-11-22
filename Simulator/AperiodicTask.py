@@ -14,8 +14,8 @@ class AperiodicTask(Task):
         self.computationTime = computationTime
         self.priority = priority
 
-    def generateEvents(self, clock, until):
+    def generateEvents(self, clock, stats, until):
          # TODO : Generate more events using interarrivalTime
-        instance = TaskInstance(self.arrivalTime, self.computationTime, self, clock)
+        instance = TaskInstance(self.arrivalTime, self.computationTime, self, clock, stats)
         event = Event(self.arrivalTime, EventType.NEW_SOFT, instance)
         return [event]
