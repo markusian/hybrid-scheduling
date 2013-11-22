@@ -13,8 +13,6 @@
 #Imports
 
 #Different task types
-from HardTask import HardTask
-from SoftTask import SoftTask
 from Task import Task
 from TaskInstance import TaskInstance
 #Needed for csv files
