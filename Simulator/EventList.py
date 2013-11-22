@@ -4,20 +4,9 @@ from EventType import EventType
 from PriorityQueue import PriorityQueue
 
 class EventList(object):
-
     def __init__(self):
         self.arrivalList = PriorityQueue()
         self.interruptEvent = None
-
-#    def getNextEvents(self):
-#        """Returns a list containing the next concurrent events"""
-#        if len(self.arrivalList) == 0:
-#            return []
-#        nextTimestamp = self.arrivalList[0][0]
-#        nextEvents = [hq.heappop(self.arrivalList)[1]]
-#        while (len(self.arrivalList)>0 and self.arrivalList[0][0] == nextTimestamp):
-#            nextEvents.append(hq.heappop(self.arrivalList)[1])
-#        return nextEvents
 
     def getNextEvent(self):
         """Returns the next Event (According to time)."""
@@ -37,8 +26,8 @@ class EventList(object):
 
     def insertEvent(self, event):
         """Insert an event in the list"""
-        if (event.eventType == EventType.SOFT_ARRIVAL or event.eventType == EventType.HARD_ARRIVAL):
-            self.arrivalList.push(event.time, event)
+        if (event.eventType == EventType.NEW_SOFT or event.eventType == EventType.NEW_HARD):
+            self.arrivalList.push(event, event.time)
         elif (event.eventType == EventType.INTERRUPT):
             self.interruptEvent = event
 

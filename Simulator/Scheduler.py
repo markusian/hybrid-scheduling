@@ -2,7 +2,7 @@ from EventType import EventType
 from Event import Event
 from EventList import EventList
 from Instance import Instance
-from HardTask import HardTask
+from Task import Task
 from PriorityQueue import PriorityQueue
 
 class Scheduler(object):
@@ -30,19 +30,17 @@ class Scheduler(object):
             self.active.execute(time)
 
             if (self.active.finished()):
-                # Remove the task from the scheduler
                 self.active.finish()
-                self.active = None
+            else :
+                # Put the task back in the waiting list
+                self.waiting.push(self.active, -self.active.priority())
 
-        self.schedule()
+        self.active = None
 
     def schedule(self):
         """
         Execute the most priority task on the scheduler.
         """
-
-        if (self.active is not None):
-            self.waiting.push(self.active.task.priority, self.active)
 
         if (not self.waiting.isEmpty()):
             task = self.waiting.pop()
@@ -65,7 +63,7 @@ class Scheduler(object):
         :param instance: The instance
         :type instance: Instance
         """
-        self.waiting.push(instance.arrivalTime, instance)
+        self.waiting.push(instance, -instance.priority())
 
 if __name__ == "__main__":
     scheduler = Scheduler()

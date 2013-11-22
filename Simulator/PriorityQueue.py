@@ -4,9 +4,9 @@ class PriorityQueue(object):
     def __init__(self):
         self.list = []
 
-    def push(self, priority, elem):
+    def push(self, elem, priority):
         """Add an element to the list with the given priority."""
-        hq.heappush(self.list,(priority, elem))
+        hq.heappush(self.list, (priority, elem))
 
     def isEmpty(self):
         """Return true if the list is empty."""

@@ -1,5 +1,5 @@
 from Instance import Instance
-from Debug import Debug
+import logging
 
 class TaskInstance(Instance):
     """An instance of a task (sometimes called a job)."""
@@ -29,18 +29,21 @@ class TaskInstance(Instance):
         return str(self.task.idx)
 
     def start(self):
-        if Debug.debug:
-            print "Instance started : " + str(self)
+        logging.debug(str(self.clock.currentTime()) + " - "
+                   "Started : " + str(self))
         self.startTime = self.clock.currentTime()
         self.hasStarted = True
 
     def finish(self):
-        if Debug.debug:
-            print "Instance finished : " + str(self)
+        logging.debug(str(self.clock.currentTime()) + " - "
+                   "Finished : " + str(self))
         # TODO: Compute statistics
         pass
 
     def execute(self, time):
+        logging.debug(str(self.clock.currentTime()) + " - "
+                   "Executed : " + str(self) + " "
+                   "for " + str(time))
         self.remainingTime -= time
         
     def nextInterrupt(self):
@@ -51,3 +54,6 @@ class TaskInstance(Instance):
 
     def finished(self):
         return self.remainingTime <= 0
+
+    def priority(self):
+        return self.task.priority

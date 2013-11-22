@@ -35,3 +35,10 @@ class Instance(object):
         :rtype: Boolean
         """
         return False
+
+
+    def priority(self):
+        return -1
+
+    def __cmp__(self, other):
+        return self.priority() - other.priority()

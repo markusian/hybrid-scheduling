@@ -1,4 +1,4 @@
 class EventType:
-    SOFT_ARRIVAL = "Soft Arrival"
-    HARD_ARRIVAL = "Hard Arrival"
+    NEW_HARD = "Periodic Arrival"
+    NEW_SOFT = "Aperiodic Arrival"
     INTERRUPT = "Interrupt"

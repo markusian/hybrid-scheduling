@@ -12,8 +12,8 @@
 #Imports
 
 #Different task types
-from HardTask import HardTask
-from SoftTask import SoftTask
+from PeriodicTask import PeriodicTask
+from AperiodicTask import AperiodicTask
 from Task import Task
 #Needed for csv files
 import csv
@@ -41,7 +41,7 @@ class InputParser(object):
     def getHardTaskList(self):
         hardTaskList = []
         for i in range(0, len(self.getTaskList())):
-            if isinstance(self.getTaskList()[i], HardTask):
+            if isinstance(self.getTaskList()[i], PeriodicTask):
                 hardTaskList.append(self.getTaskList()[i])
         return hardTaskList
         
@@ -50,7 +50,7 @@ class InputParser(object):
     def getSoftTaskList(self):
         softTaskList = []
         for i in range(0, len(self.getTaskList())):
-            if isinstance(self.getTaskList()[i], SoftTask):
+            if isinstance(self.getTaskList()[i], AperiodicTask):
                 softTaskList.append(self.getTaskList()[i])
         return softTaskList
 
@@ -67,11 +67,11 @@ class InputParser(object):
             #Hard task
             if row[0] == "hard":
                 #HardTask(self, id, firstArrivalTime, computationTime, period)
-                task = HardTask(len(self.taskList)+1, int(row[3]), int(row[1]), int(row[2]))
+                task = PeriodicTask(row[1], int(row[4]), int(row[2]), int(row[3]))
             #Soft task
             elif row[0] == "soft":
                 #SoftTask(self, id, firstArrivalTime, computationTime, priority, interrarivalTime)
-                task = SoftTask(len(self.taskList)+1, int(row[3]), int(row[1]), int(row[5]), int(row[4]))
+                task = AperiodicTask(row[1], int(row[4]), int(row[2]), int(row[6]), int(row[5]))
             #Wrong type of task or not recognized
             else:
                 task = False
