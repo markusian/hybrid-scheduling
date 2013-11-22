@@ -38,8 +38,8 @@ class TaskInstance(Instance):
     def finish(self):
         logging.debug(str(self.clock.currentTime()) + " - "
                    "Finished : " + str(self))
-        # TODO : Remove eventually the clock
-        self.stats.addToList(self, self.clock.currentTime())
+        self.finishingTime = self.clock.currentTime()
+        self.stats.addToList(self)
 
     def execute(self, time):
         logging.debug(str(self.clock.currentTime()) + " - "
