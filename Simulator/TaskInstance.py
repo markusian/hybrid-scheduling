@@ -4,20 +4,16 @@ import logging
 class TaskInstance(Instance):
     """An instance of a task (sometimes called a job)."""
 	
-    def __init__(self, arrivalTime, task, clock):
+    def __init__(self, arrival, computation, task, clock):
         """
         Init the instance.
-
-        :param arrivalTime: Time of arrival of the instance on the system.
-        :type arrivalTime: int
-        :param clock: A reference to the clock (used for statistics)
         """
 
-        self.arrivalTime = arrivalTime
+        self.arrivalTime = arrival
         self.task = task
 
-        self.computationTime = task.computationTime
-        self.remainingTime = task.computationTime
+        self.computationTime = computation
+        self.remainingTime = computation
 
         self.startTime = None
         self.finishingTime = None
@@ -54,6 +50,3 @@ class TaskInstance(Instance):
 
     def finished(self):
         return self.remainingTime <= 0
-
-    def priority(self):
-        return self.task.priority

@@ -13,9 +13,16 @@ class Scheduler(object):
         waiting     A list of waiting tasks
     """
 
-    def __init__(self):
+    def __init__(self, priority):
+        """
+        Init the scheduler.
+
+        priority(instance) is a function to retrieve the priority of a given 
+        instance on the scheduler.
+        """
         self.active = None
         self.waiting = PriorityQueue()
+        self.priority = priority
 
     def execute(self, time):
         """
@@ -33,7 +40,7 @@ class Scheduler(object):
                 self.active.finish()
             else :
                 # Put the task back in the waiting list
-                self.waiting.push(self.active, -self.active.priority())
+                self.waiting.push(self.active, -self.priority(self.active))
 
         self.active = None
 
@@ -63,7 +70,7 @@ class Scheduler(object):
         :param instance: The instance
         :type instance: Instance
         """
-        self.waiting.push(instance, -instance.priority())
+        self.waiting.push(instance, -self.priority(instance))
 
 if __name__ == "__main__":
     scheduler = Scheduler()

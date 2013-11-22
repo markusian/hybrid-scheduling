@@ -7,10 +7,12 @@ from AperiodicTask import AperiodicTask
 from TaskInstance import TaskInstance
 from Event import Event
 from EventType import EventType
+from BackgroundServerTask import BackgroundServerTask
 from BackgroundServerInstance import BackgroundServerInstance
+from PollingServerTask import PollingServerTask
 from PollingServerInstance import PollingServerInstance
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 class Simulator(object):
     """The main simulator."""
@@ -21,8 +23,20 @@ class Simulator(object):
         :param eList: A list of events
         :type eList: EventList
         """
-        self.hardScheduler = Scheduler()
-        self.softScheduler = Scheduler()
+        def rmPriority(instance):
+            if (isinstance(instance, BackgroundServerInstance)):
+                return 0
+
+            if (isinstance(instance, PollingServerInstance)):
+                return 1.0/float(instance.server.period)
+            
+            return 1.0/float(instance.task.period)
+
+        def fixedPriority(instance):
+            return instance.task.priority
+
+        self.hardScheduler = Scheduler(rmPriority)
+        self.softScheduler = Scheduler(fixedPriority)
         self.eventList = EventList()
         self.clock = Clock()
 
@@ -76,40 +90,14 @@ class Simulator(object):
         """
         
         for task in taskList:
-            if isinstance(task, PeriodicTask) :
-                # Generate the periodic instances
-                for i in range(10):
-                    instance = TaskInstance(task.arrivalTime + i * task.period, task, self.clock)
-                    event = Event(task.arrivalTime + i * task.period, EventType.NEW_HARD, instance)
-                    self.eventList.insertEvent(event)
-            elif isinstance(task, AperiodicTask) :
-                # Generate only one instance
-                instance = TaskInstance(task.arrivalTime, task, self.clock)
-                event = Event(task.arrivalTime, EventType.NEW_SOFT, instance)
+            for event in task.generateEvents(self.clock, 50):
                 self.eventList.insertEvent(event)
 
-    def setBackgroundServer(self):
-        """
-        Initialize a background server.
-        """
-        instance = BackgroundServerInstance(self.softScheduler)
-        self.hardScheduler.put(instance)
-
-    def setPollingServer(self, capacity, period):
-        """
-        Initialize a polling server.
-        """
-        for i in range(10):
-            instance = PollingServerInstance(self.softScheduler, capacity, period)
-            event = Event(i * period, EventType.NEW_HARD, instance)
-            self.eventList.insertEvent(event)
-
-
 if __name__ == "__main__":
-    htasks = InputParser()
-    htasks.getTasksFromFile("polling_test.csv")
+    tasks = InputParser()
+    tasks.getTasksFromFile("polling_test.csv")
 
     s = Simulator()
-    s.populateEventList(htasks.getTaskList())
-    s.setPollingServer(2, 5)
+    tasks.addTaskToList(PollingServerTask(2, 5, s.softScheduler))
+    s.populateEventList(tasks.getTaskList())
     s.execute()

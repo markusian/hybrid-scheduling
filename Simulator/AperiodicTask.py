@@ -1,23 +1,21 @@
 from Task import Task
+from TaskInstance import TaskInstance
+from Event import Event
+from EventType import EventType
 
 class AperiodicTask(Task):
-    def __init__(self, id, firstArrivalTime, computationTime, priority,
-        interrarivalTime):
+    # TODO : Handle interArrivalTime
+    def __init__(self, idx, arrivalTime, computationTime, priority):
         """
         Init the task.
-        
-        :param id: id of the task
-        :param firstArrivalTime: the time when the task will be first released 
-        on the system
-        :param computationTime: the time the task needs to run before completion
-        :param priority: Priority of the task
-        :param interrarivalTime: A function to get the next arrivalTime of the
-        task
-        :type id: int
-        :type firstArrivalTime: int
-        :type computationTime: int
-        :type priority: int
-        :type interrarivalTime: function
         """
-        Task.__init__(self, id, firstArrivalTime, computationTime, priority)
-        self.interrarivalTime = interrarivalTime
+        Task.__init__(self, idx)
+        self.arrivalTime = arrivalTime
+        self.computationTime = computationTime
+        self.priority = priority
+
+    def generateEvents(self, clock, until):
+         # TODO : Generate more events using interarrivalTime
+        instance = TaskInstance(self.arrivalTime, self.computationTime, self, clock)
+        event = Event(self.arrivalTime, EventType.NEW_SOFT, instance)
+        return [event]

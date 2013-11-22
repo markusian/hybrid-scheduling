@@ -28,6 +28,3 @@ class BackgroundServerInstance(Instance):
 
     def finised(self):
         return False
-
-    def priority(self):
-        return 0
