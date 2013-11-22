@@ -51,6 +51,7 @@ class ExportStats(object):
                 #Header for the CSV
                 writer.writerow(["Task Type", "Arrival Time", "Finishing Time", "Period", "Time To Deadline", "Task ID"])
                 for i in range(0, len(self.taskList)):
+                    #Hard task (if a soft task, throws AttributeError)
                     try: 
                         #Define some variables to for easier arglist to writer
                         arrivalTime = self.taskList[i].getTask().arrivalTime
@@ -61,12 +62,13 @@ class ExportStats(object):
                         priority = str(self.taskList[i].getTask().task.priority)
                         #Actual writing
                         writer.writerow(["hard", arrivalTime, finishingTime, period, timeToDeadline, taskId])
+                    #Soft task
                     except AttributeError:
                         #Define some variables to for easier arglist to writer
                         arrivalTime = self.taskList[i].getTask().arrivalTime
-                        period = 0
+                        period = ""
                         finishingTime = self.taskList[i].getFinishingTime()
-                        timeToDeadline = 0
+                        timeToDeadline = ""
                         taskId = self.taskList[i].getTask().task.idx
                         priority = str(self.taskList[i].getTask().task.priority)
                         #Actual writing
