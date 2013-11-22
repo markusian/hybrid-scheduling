@@ -1,19 +1,17 @@
 
 class Event(object):
-    
-    def __init__(self,timestamp,taskInstance,eventType):
-        self.taskInstance = taskInstance
+    def __init__(self, time, eventType, instance = None):
+        self.instance = instance
         self.eventType = eventType
-        self.timestamp = timestamp     
+        self.time = time
     
     def __str__(self):
-        
-        var = [str(el) for el in [self.timestamp,self.taskInstance,self.eventType]]
-        s = "("+",".join(var) + ")"
-        return s
+        return ("[Time : " + str(self.time) + ", "
+                "Instance : " + str(self.instance) + ", "
+                "Type : " + str(self.eventType) + "]")
         
     def __repr__(self):
-        return self.__str__()
+        return self.__str__() 
 
-                
-        
+    def __cmp__(self, other):
+        return self.time - other.time

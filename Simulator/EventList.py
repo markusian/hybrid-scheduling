@@ -4,49 +4,38 @@ from EventType import EventType
 from PriorityQueue import PriorityQueue
 
 class EventList(object):
-
     def __init__(self):
         self.arrivalList = PriorityQueue()
-        self.finishEvent = None
-
-#    def getNextEvents(self):
-#        """Returns a list containing the next concurrent events"""
-#        if len(self.arrivalList) == 0:
-#            return []
-#        nextTimestamp = self.arrivalList[0][0]
-#        nextEvents = [hq.heappop(self.arrivalList)[1]]
-#        while (len(self.arrivalList)>0 and self.arrivalList[0][0] == nextTimestamp):
-#            nextEvents.append(hq.heappop(self.arrivalList)[1])
-#        return nextEvents
+        self.interruptEvent = None
 
     def getNextEvent(self):
         """Returns the next Event (According to time)."""
         # TODO : It works but can find a more elegant way ;)
-        if (self.finishEvent is None) and (self.arrivalList.isEmpty()):
+        if (self.interruptEvent is None) and (self.arrivalList.isEmpty()):
             return None
-        elif (self.finishEvent is not None) and (self.arrivalList.isEmpty()):
-            event = self.finishEvent
-            self.finishEvent = None
+        elif (self.interruptEvent is not None) and (self.arrivalList.isEmpty()):
+            event = self.interruptEvent
+            self.interruptEvent = None
             return event
-        elif (self.finishEvent is None) or (self.arrivalList.peak().timestamp < self.finishEvent.timestamp):
+        elif (self.interruptEvent is None) or (self.arrivalList.peak().time < self.interruptEvent.time):
             return self.arrivalList.pop()
         else:
-            event = self.finishEvent
-            self.finishEvent = None
+            event = self.interruptEvent
+            self.interruptEvent = None
             return event
 
     def insertEvent(self, event):
         """Insert an event in the list"""
-        if (event.eventType == EventType.ARRIVAL):
-            self.arrivalList.push(event.timestamp,event)
-        elif (event.eventType == EventType.FINISHING):
-            self.finishEvent = event
+        if (event.eventType == EventType.NEW_SOFT or event.eventType == EventType.NEW_HARD):
+            self.arrivalList.push(event, event.time)
+        elif (event.eventType == EventType.INTERRUPT):
+            self.interruptEvent = event
 
     def __str__(self):
         ret = "ARRIVING : "
         for el in self.arrivalList.list:
             ret += str(el[1])
-        ret += "\nFINISHING : " + str(self.finishEvent)
+        ret += "\nFINISHING : " + str(self.interruptEvent)
 
         return ret
 
