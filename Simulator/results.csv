@@ -1,0 +1,25 @@
+Task Type,Arrival Time,Finishing Time,Period,Time To Deadline,Task ID
+hard,0,1,4,3,H1
+hard,0,3,6,3,H2
+hard,4,5,4,3,H1
+soft,2,7,0,0,S1
+hard,8,9,4,3,H1
+hard,6,10,6,2,H2
+soft,8,11,0,0,S2
+hard,12,13,4,3,H1
+hard,12,15,6,3,H2
+hard,16,17,4,3,H1
+soft,12,18,0,0,S3
+hard,18,20,6,4,H2
+hard,20,21,4,3,H1
+soft,19,22,0,0,S4
+hard,24,25,4,3,H1
+hard,24,27,6,3,H2
+hard,28,29,4,3,H1
+hard,30,32,6,4,H2
+hard,32,33,4,3,H1
+hard,36,37,4,3,H1
+hard,36,39,6,3,H2
+hard,42,44,6,4,H2
+hard,48,50,6,4,H2
+hard,54,56,6,4,H2

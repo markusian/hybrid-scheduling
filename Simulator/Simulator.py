@@ -9,6 +9,7 @@ from Event import Event
 from EventType import EventType
 from BackgroundServerInstance import BackgroundServerInstance
 from PollingServerInstance import PollingServerInstance
+from ExportStats import ExportStats
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -25,6 +26,7 @@ class Simulator(object):
         self.softScheduler = Scheduler()
         self.eventList = EventList()
         self.clock = Clock()
+        self.stats = ExportStats()
 
     def reactToEvent(self, event):
         """
@@ -79,12 +81,12 @@ class Simulator(object):
             if isinstance(task, PeriodicTask) :
                 # Generate the periodic instances
                 for i in range(10):
-                    instance = TaskInstance(task.arrivalTime + i * task.period, task, self.clock)
+                    instance = TaskInstance(task.arrivalTime + i * task.period, task, self.clock, self.stats)
                     event = Event(task.arrivalTime + i * task.period, EventType.NEW_HARD, instance)
                     self.eventList.insertEvent(event)
             elif isinstance(task, AperiodicTask) :
                 # Generate only one instance
-                instance = TaskInstance(task.arrivalTime, task, self.clock)
+                instance = TaskInstance(task.arrivalTime, task, self.clock, self.stats)
                 event = Event(task.arrivalTime, EventType.NEW_SOFT, instance)
                 self.eventList.insertEvent(event)
 
@@ -113,3 +115,5 @@ if __name__ == "__main__":
     s.populateEventList(htasks.getTaskList())
     s.setPollingServer(2, 5)
     s.execute()
+
+    s.stats.writeToFile("results.csv")

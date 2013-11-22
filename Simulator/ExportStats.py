@@ -13,8 +13,6 @@
 #Imports
 
 #Different task types
-from HardTask import HardTask
-from SoftTask import SoftTask
 from Task import Task
 from TaskInstance import TaskInstance
 #Needed for csv files
@@ -51,17 +49,30 @@ class ExportStats(object):
             with open(filename, "wb") as fh:
                 writer = csv.writer(fh)
                 #Header for the CSV
-                writer.writerow(["Arrival Time", "Finishing Time", "Period", "Time To Deadline", "Task ID"])
+                writer.writerow(["Task Type", "Arrival Time", "Finishing Time", "Period", "Time To Deadline", "Task ID"])
                 for i in range(0, len(self.taskList)):
-                    #Define some variables to for easier arglist to writer
-                    arrivalTime = self.taskList[i].getTask().arrivalTime
-                    period = self.taskList[i].getTask().task.period
-                    finishingTime = self.taskList[i].getFinishingTime()
-                    timeToDeadline = str(int(period) + int(arrivalTime) - int(finishingTime))
-                    taskId = self.taskList[i].getTask().task.idx
-                    priority = str(self.taskList[i].getTask().task.priority)
-                    #Actual writing
-                    writer.writerow([arrivalTime, finishingTime, period, timeToDeadline, taskId])
+                    #Hard task (if a soft task, throws AttributeError)
+                    try: 
+                        #Define some variables to for easier arglist to writer
+                        arrivalTime = self.taskList[i].getTask().arrivalTime
+                        period = self.taskList[i].getTask().task.period
+                        finishingTime = self.taskList[i].getFinishingTime()
+                        timeToDeadline = str(int(period) + int(arrivalTime) - int(finishingTime))
+                        taskId = self.taskList[i].getTask().task.idx
+                        priority = str(self.taskList[i].getTask().task.priority)
+                        #Actual writing
+                        writer.writerow(["hard", arrivalTime, finishingTime, period, timeToDeadline, taskId])
+                    #Soft task
+                    except AttributeError:
+                        #Define some variables to for easier arglist to writer
+                        arrivalTime = self.taskList[i].getTask().arrivalTime
+                        period = ""
+                        finishingTime = self.taskList[i].getFinishingTime()
+                        timeToDeadline = ""
+                        taskId = self.taskList[i].getTask().task.idx
+                        priority = str(self.taskList[i].getTask().task.priority)
+                        #Actual writing
+                        writer.writerow(["soft", arrivalTime, finishingTime, period, timeToDeadline, taskId])
             return True
         #File opening error
         except IOError:
