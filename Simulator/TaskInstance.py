@@ -4,7 +4,7 @@ import logging
 class TaskInstance(Instance):
     """An instance of a task (sometimes called a job)."""
 	
-    def __init__(self, arrivalTime, task, clock):
+    def __init__(self, arrivalTime, task, clock, stats):
         """
         Init the instance.
 
@@ -24,6 +24,7 @@ class TaskInstance(Instance):
 
         self.hasStarted = False
         self.clock = clock
+        self.stats = stats
 
     def __str__(self):
         return str(self.task.idx)
@@ -37,8 +38,8 @@ class TaskInstance(Instance):
     def finish(self):
         logging.debug(str(self.clock.currentTime()) + " - "
                    "Finished : " + str(self))
-        # TODO: Compute statistics
-        pass
+        # TODO : Remove eventually the clock
+        self.stats.addToList(self, self.clock.currentTime())
 
     def execute(self, time):
         logging.debug(str(self.clock.currentTime()) + " - "
