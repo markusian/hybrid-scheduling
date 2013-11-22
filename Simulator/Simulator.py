@@ -92,7 +92,7 @@ class Simulator(object):
         """
         
         for task in taskList:
-            for event in task.generateEvents(self.clock, self.stats, 50):
+            for event in task.generateEvents(self.clock, self.stats, 5000):
                 self.eventList.insertEvent(event)
 
 if __name__ == "__main__":
