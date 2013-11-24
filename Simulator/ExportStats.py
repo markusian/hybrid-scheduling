@@ -44,7 +44,7 @@ class ExportStats(object):
                         finishingTime = self.taskList[i].finishingTime
                         timeToDeadline = str(int(period) + int(arrivalTime) - int(finishingTime))
                         taskId = self.taskList[i].task.idx
-                        priority = str(self.taskList[i].task.priority)
+                        #priority = str(self.taskList[i].task.priority)
                         #Actual writing
                         writer.writerow(["hard", arrivalTime, finishingTime, period, timeToDeadline, taskId])
                     #Soft task
