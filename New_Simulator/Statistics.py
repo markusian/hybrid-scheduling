@@ -17,7 +17,10 @@ class Statistics(object):
         writer.writerow(["id"[0:col].center(col),
                          "type"[0:col].center(col), 
                          "arrival"[0:col].center(col), 
+                         "start"[0:col].center(col),
                          "finish"[0:col].center(col), 
+                         "computation"[0:col].center(col),
+                         "idle"[0:col].center(col),
                          "period"[0:col].center(col), 
                          "TTD"[0:col].center(col)])
 
@@ -26,13 +29,19 @@ class Statistics(object):
                 writer.writerow([i.task.id[0:col].rjust(col),
                                  "hard"[0:col].rjust(col),
                                  str(i.arrival)[0:col].rjust(col),
+                                 str(i.start)[0:col].rjust(col),
                                  str(i.finish)[0:col].rjust(col),
+                                 str(i.computation)[0:col].rjust(col),
+                                 str(i.idle)[0:col].rjust(col),
                                  str(i.task.period)[0:col].rjust(col),
                                  str(i.time_to_deadline)[0:col].rjust(col)])
             elif i.type == Instance.SOFT:
                 writer.writerow([i.task.id[0:col].rjust(col),
                                  "soft"[0:col].rjust(col),
                                  str(i.arrival)[0:col].rjust(col),
+                                 str(i.start)[0:col].rjust(col),
                                  str(i.finish)[0:col].rjust(col),
+                                 str(i.computation)[0:col].rjust(col),
+                                 str(i.idle)[0:col].rjust(col),
                                  ""[0:col].rjust(col),
                                  ""[0:col].rjust(col)])

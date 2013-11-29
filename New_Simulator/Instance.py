@@ -11,7 +11,7 @@ class Instance(object):
         self.arrival = arrival
         self.computation = computation
         self.remaining = computation
-        self.idle = 0
+        self.idle = []
         self.interrupt = arrival
         self.priority = priority
         
@@ -19,9 +19,13 @@ class Instance(object):
         """
         Execute the instance to the given time.
         """
-        logging.info(str(since) + ": Execute " + self.task.id + " for " + str(to - since))
+        logging.info(str(since) + ": Execute " + self.task.id + 
+                     " for " + str(to - since))
         # Compute statistics
-        self.idle += since - self.interrupt
+        if self.interrupt == self.arrival:
+            self.start = since
+        elif self.interrupt != since:
+            self.idle.append((self.interrupt, since))
 
         self.remaining -= to - since
         self.interrupt = to
@@ -39,4 +43,5 @@ class Instance(object):
         self.finish = self.interrupt
 
         if self.type == Instance.HARD:
-            self.time_to_deadline = self.task.period + self.arrival - self.finish
+            self.time_to_deadline = self.task.period + \
+                                    self.arrival - self.finish

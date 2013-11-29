@@ -6,7 +6,7 @@ from PriorityQueue import PriorityQueue
 from ReadConfig import ReadConfig
 from Statistics import Statistics
 import logging
-logging.basicConfig(level = logging.INFO)
+logging.basicConfig(level = logging.WARNING)
 
 class Simulator(object):
     def __init__(self) :
@@ -137,7 +137,7 @@ class Simulator(object):
 
 if __name__ == '__main__':
     s = Simulator()
-    s.load("background.json")
+    s.load("polling.json")
     s.init(24)
     s.run()
     s.statistics.write("results.csv")
