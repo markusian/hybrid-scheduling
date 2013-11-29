@@ -1,0 +1,4 @@
+tasktype,wcet,period,firstArrivalTime,interarrivalTime,priority
+hard,3,1,0,,
+hard,4,1,0,,
+hard,6,1,0,,
