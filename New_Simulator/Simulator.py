@@ -4,6 +4,7 @@ from Event import Event, EventList
 from Task import PeriodicTask, AperiodicTask
 from PriorityQueue import PriorityQueue
 from ReadConfig import ReadConfig
+from Statistics import Statistics
 import logging
 logging.basicConfig(level = logging.INFO)
 
@@ -15,6 +16,7 @@ class Simulator(object):
         self.events = EventList()
         self.clock = 0
         self.tasks = []
+        self.statistics = Statistics()
 
     def update(self):
         """
@@ -76,7 +78,9 @@ class Simulator(object):
         elif event.instance.type == Instance.HARD:
             self.waiting.pop()
 
-        # TODO: Compute statistics
+        # Compute statistics
+        event.instance.statistics()
+        self.statistics.put(event.instance)
 
     def reactSuspend(self, event):
         # Suspend the server
@@ -136,3 +140,4 @@ if __name__ == '__main__':
     s.load("background.json")
     s.init(24)
     s.run()
+    s.statistics.write("results.csv")

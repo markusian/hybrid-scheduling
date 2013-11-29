@@ -31,3 +31,12 @@ class Instance(object):
         Return a finishing event for the instance.
         """
         return Event(Event.FINISH, since + self.remaining, self)
+
+    def statistics(self):
+        """
+        At the end of the execution, compute statistics.
+        """
+        self.finish = self.interrupt
+
+        if self.type == Instance.HARD:
+            self.time_to_deadline = self.task.period + self.arrival - self.finish
