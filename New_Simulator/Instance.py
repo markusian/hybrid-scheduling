@@ -11,9 +11,13 @@ class Instance(object):
         self.arrival = arrival
         self.computation = computation
         self.remaining = computation
-        self.idle = []
+        self.idle = 0
         self.interrupt = arrival
         self.priority = priority
+        if self.type == Instance.HARD:
+            self.deadline = arrival + task.period
+        else:
+            self.deadline = float('inf')
         
     def advance(self, since, to):
         """
@@ -25,7 +29,7 @@ class Instance(object):
         if self.interrupt == self.arrival:
             self.start = since
         elif self.interrupt != since:
-            self.idle.append((self.interrupt, since))
+            self.idle += to - since
 
         self.remaining -= to - since
         self.interrupt = to
@@ -41,7 +45,4 @@ class Instance(object):
         At the end of the execution, compute statistics.
         """
         self.finish = self.interrupt
-
-        if self.type == Instance.HARD:
-            self.time_to_deadline = self.task.period + \
-                                    self.arrival - self.finish
+        self.time_to_deadline = self.deadline - self.finish

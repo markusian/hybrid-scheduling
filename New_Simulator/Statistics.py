@@ -21,27 +21,16 @@ class Statistics(object):
                          "finish"[0:col].center(col), 
                          "computation"[0:col].center(col),
                          "idle"[0:col].center(col),
-                         "period"[0:col].center(col), 
+                         "deadline"[0:col].center(col), 
                          "TTD"[0:col].center(col)])
 
         for i in self.instances:
-            if i.type == Instance.HARD:
-                writer.writerow([i.task.id[0:col].rjust(col),
-                                 "hard"[0:col].rjust(col),
-                                 str(i.arrival)[0:col].rjust(col),
-                                 str(i.start)[0:col].rjust(col),
-                                 str(i.finish)[0:col].rjust(col),
-                                 str(i.computation)[0:col].rjust(col),
-                                 str(i.idle)[0:col].rjust(col),
-                                 str(i.task.period)[0:col].rjust(col),
-                                 str(i.time_to_deadline)[0:col].rjust(col)])
-            elif i.type == Instance.SOFT:
-                writer.writerow([i.task.id[0:col].rjust(col),
-                                 "soft"[0:col].rjust(col),
-                                 str(i.arrival)[0:col].rjust(col),
-                                 str(i.start)[0:col].rjust(col),
-                                 str(i.finish)[0:col].rjust(col),
-                                 str(i.computation)[0:col].rjust(col),
-                                 str(i.idle)[0:col].rjust(col),
-                                 ""[0:col].rjust(col),
-                                 ""[0:col].rjust(col)])
+            writer.writerow([i.task.id[0:col].rjust(col),
+                             "hard"[0:col].rjust(col),
+                             str(i.arrival)[0:col].rjust(col),
+                             str(i.start)[0:col].rjust(col),
+                             str(i.finish)[0:col].rjust(col),
+                             str(i.computation)[0:col].rjust(col),
+                             str(i.idle)[0:col].rjust(col),
+                             str(i.deadline)[0:col].rjust(col),
+                             str(i.time_to_deadline)[0:col].rjust(col)])
