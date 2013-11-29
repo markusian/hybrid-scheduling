@@ -21,7 +21,7 @@ class PeriodicTask(Task):
 
     def generateEvents(self, until):
         events = list()
-        i = int(random.uniform(0, self.period))
+        i = random.uniform(0, self.period)
         while i < until:
             instance = Instance(Instance.HARD, self, i, self.wcet, self.priority)
             event = Event(Event.ARRIVAL, i, instance)
@@ -29,6 +29,26 @@ class PeriodicTask(Task):
             i += self.period
 
         return events
+
+    @staticmethod
+    def lcm(tasks):
+        """
+        Compute LCM of period for a list of tasks (ignore aperiodic tasks)
+        """
+        def gcd(a, b):
+            while b:      
+                a, b = b, a % b
+            return a
+
+        def lcm(a, b):
+            return a * b // gcd(a, b)
+
+        res = 1
+        for t in tasks:
+            if isinstance(t, PeriodicTask):
+                res = lcm(res, t.period)
+
+        return res
 
 class AperiodicTask(Task):
     def __init__(self, id, computation, release):
@@ -44,11 +64,11 @@ class AperiodicTask(Task):
 
     def generateEvents(self, until):
         events = list()
-        i = random.poisson(1.0/self.release)
+        i = random.poisson(self.release)
         while i < until:
-            computation = random.exponential(1.0/self.computation)
-            instance = Instance(Instance.SOFT, self, i, self.computation, self.priority)
+            computation = random.exponential(self.computation)
+            instance = Instance(Instance.SOFT, self, i, computation, self.priority)
             event = Event(Event.ARRIVAL, i, instance)
             events.append(event)
-            i += random.poisson(1.0/self.release)
+            i += random.poisson(self.release)
         return events
