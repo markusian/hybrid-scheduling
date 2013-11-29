@@ -11,9 +11,11 @@ from BackgroundServerTask import BackgroundServerTask
 from BackgroundServerInstance import BackgroundServerInstance
 from PollingServerTask import PollingServerTask
 from PollingServerInstance import PollingServerInstance
+from DeferrableServerTask import DeferrableServerTask
+from DeferrableServerInstance import DeferrableServerInstance
 from ExportStats import ExportStats
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 class Simulator(object):
     """The main simulator."""
@@ -28,8 +30,15 @@ class Simulator(object):
             if (isinstance(instance, BackgroundServerInstance)):
                 return 0
 
-            if (isinstance(instance, PollingServerInstance)):
+            if isinstance(instance, PollingServerInstance):
                 return 1.0/float(instance.server.period)
+
+            if isinstance(instance, DeferrableServerInstance):
+                if (instance.server.scheduler.active is None):
+                    return 0
+
+                else:
+                    return 1.0/float(instance.server.period)
             
             return 1.0/float(instance.task.period)
 
@@ -92,15 +101,15 @@ class Simulator(object):
         """
         
         for task in taskList:
-            for event in task.generateEvents(self.clock, self.stats, 5000):
+            for event in task.generateEvents(self.clock, self.stats, 24):
                 self.eventList.insertEvent(event)
 
 if __name__ == "__main__":
     tasks = InputParser()
-    tasks.getTasksFromFile("polling_test.csv")
+    tasks.getTasksFromFile("deferrable_test.csv")
 
     s = Simulator()
-    tasks.addTaskToList(PollingServerTask(2, 5, s.softScheduler))
+    tasks.addTaskToList(DeferrableServerTask(2, 6, s.softScheduler))
     s.populateEventList(tasks.getTaskList())
     s.execute()
 
