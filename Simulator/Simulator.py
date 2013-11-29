@@ -15,7 +15,7 @@ from DeferrableServerTask import DeferrableServerTask
 from DeferrableServerInstance import DeferrableServerInstance
 from ExportStats import ExportStats
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 class Simulator(object):
     """The main simulator."""
@@ -101,15 +101,15 @@ class Simulator(object):
         """
         
         for task in taskList:
-            for event in task.generateEvents(self.clock, self.stats, 24):
+            for event in task.generateEvents(self.clock, self.stats, 5000):
                 self.eventList.insertEvent(event)
 
 if __name__ == "__main__":
     tasks = InputParser()
-    tasks.getTasksFromFile("deferrable_test.csv")
+    tasks.getTasksFromFile("polling_test.csv")
 
     s = Simulator()
-    tasks.addTaskToList(DeferrableServerTask(2, 6, s.softScheduler))
+    tasks.addTaskToList(PollingServerTask(2, 5, s.softScheduler))
     s.populateEventList(tasks.getTaskList())
     s.execute()
 

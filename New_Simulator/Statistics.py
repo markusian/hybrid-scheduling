@@ -10,7 +10,7 @@ class Statistics(object):
         self.instances.append(instance)
 
     def write(self, file, col=6):
-        writer = csv.writer(file, delimiter='|')
+        writer = csv.writer(file, delimiter='|', lineterminator='\n')
 
         # Write the headers
         writer.writerow(["id"[0:col].center(col),

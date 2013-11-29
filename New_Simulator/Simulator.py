@@ -170,7 +170,7 @@ class Simulator(object):
 
 if __name__ == '__main__':
     s = Simulator()
-    s.read("deferrable.json")
-    s.init(24)
+    s.read("compare.json")
+    s.init(5000)
     s.run()
     s.write("results.csv")
