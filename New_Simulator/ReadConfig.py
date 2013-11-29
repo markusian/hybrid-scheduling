@@ -29,4 +29,4 @@ class ReadConfig(object):
 
         # Retrieve aperiodics tasks
         for t in aperiodics:
-            self.tasks.append(AperiodicTask(t["id"], t["wcet"], t["release"], t["priority"]))
+            self.tasks.append(AperiodicTask(t["id"], t["computation"], t["release"]))

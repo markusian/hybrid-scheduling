@@ -7,7 +7,7 @@ from ReadConfig import ReadConfig
 from Statistics import Statistics
 from datetime import date
 import logging
-logging.basicConfig(level = logging.WARNING)
+logging.basicConfig(level = logging.DEBUG)
 
 class Simulator(object):
     def __init__(self) :
@@ -101,10 +101,26 @@ class Simulator(object):
         self.server = r.server
         self.tasks = r.tasks
 
-    def init(self, until):
+    def init(self, until = -1):
         """
         Initialize the server to run until the given time.
+        If -1 is given, run until the LCM of periodic tasks.
         """
+
+        def gcd(a, b):
+            while b:      
+                a, b = b, a % b
+            return a
+
+        def lcm(a, b):
+            return a * b // gcd(a, b)
+
+        if (until == -1):
+            until = 1
+            for t in self.tasks:
+                if isinstance(t, PeriodicTask):
+                    until = lcm(until, t.period)
+
         for t in self.tasks:
             for e in t.generateEvents(until):
                 self.events.put(e)
@@ -170,7 +186,7 @@ class Simulator(object):
 
 if __name__ == '__main__':
     s = Simulator()
-    s.read("compare.json")
-    s.init(5000)
+    s.read("test.json")
+    s.init()
     s.run()
     s.write("results.csv")

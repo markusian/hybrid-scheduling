@@ -23,13 +23,17 @@ class Instance(object):
         """
         Execute the instance to the given time.
         """
+        # If no time, don't advance
+        if until - since <= 0:
+            return
+
         logging.info(str(since) + ": Execute " + self.task.id + 
                      " for " + str(until - since))
         # Compute statistics
         if self.interrupt == self.arrival:
             self.start = since
-        elif self.interrupt != since:
-            self.idle += until - since
+        else:
+            self.idle += since - self.interrupt
 
         self.remaining -= until - since
         self.interrupt = until

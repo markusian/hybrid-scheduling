@@ -25,7 +25,7 @@ class Statistics(object):
 
         for i in self.instances:
             writer.writerow([i.task.id[0:col].rjust(col),
-                             "hard"[0:col].rjust(col),
+                             "hard"[0:col].rjust(col) if i.type == Instance.HARD else "soft"[0:col].rjust(col),
                              str(i.arrival)[0:col].rjust(col),
                              str(i.start)[0:col].rjust(col),
                              str(i.finish)[0:col].rjust(col),
