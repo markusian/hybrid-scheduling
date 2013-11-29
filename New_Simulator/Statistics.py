@@ -9,8 +9,7 @@ class Statistics(object):
     def put(self, instance):
         self.instances.append(instance)
 
-    def write(self, filename, col=12):
-        file = open(filename, "wb")
+    def write(self, file, col=6):
         writer = csv.writer(file, delimiter='|')
 
         # Write the headers

@@ -5,6 +5,7 @@ from Task import PeriodicTask, AperiodicTask
 from PriorityQueue import PriorityQueue
 from ReadConfig import ReadConfig
 from Statistics import Statistics
+from datetime import date
 import logging
 logging.basicConfig(level = logging.WARNING)
 
@@ -90,7 +91,7 @@ class Simulator(object):
         # Refill the server
         self.server.refill()
 
-    def load(self, filename):
+    def read(self, filename):
         """
         Load a configuration from a file.
         """
@@ -135,9 +136,41 @@ class Simulator(object):
             self.update()
             next = self.events.next()
 
+    def write(self, filename, col=6):
+        """
+        Write the results to a file.
+        """
+        file = open(filename, "wb")
+        
+        # Write some comments on the head of the file
+        width = 9*(col + 1)
+
+        file.write("Simulator results")
+
+        today = date.today()
+        file.write(("Date : " + 
+                    str(today.day) + "/" + 
+                    str(today.month) + "/" + 
+                    str(today.year) + "\n").rjust(width - 17))
+        file.write(("Runtime : " + str(self.clock) + "\n").rjust(width))
+
+        file.write("Server : " + 
+                    str(self.server.__class__.__name__))
+        file.write("\n")
+
+        if isinstance(self.server, PollingServer):
+            file.write("Capacity : " + 
+                        str(self.server.capacity) +
+                        " Period : " + 
+                        str(self.server.period) + "\n")
+
+        file.write("\n")
+
+        self.statistics.write(file, col=col)
+
 if __name__ == '__main__':
     s = Simulator()
-    s.load("polling.json")
+    s.read("deferrable.json")
     s.init(24)
     s.run()
-    s.statistics.write("results.csv")
+    s.write("results.csv")

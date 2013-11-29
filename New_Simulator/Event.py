@@ -15,7 +15,7 @@ class EventList(object):
     def __init__(self):
         self.finish = None
         self.suspend = None
-        self.others = PriorityQueue()
+        self.arrivals = PriorityQueue()
 
     def next(self):
         """
@@ -28,7 +28,7 @@ class EventList(object):
         suspend = self.suspend
         self.suspend = None
 
-        other = self.others.first()
+        other = self.arrivals.first()
 
         earliest = min(finish.time if finish is not None else float('inf'), 
                        suspend.time if suspend is not None else float('inf'),
@@ -41,7 +41,7 @@ class EventList(object):
         elif suspend is not None and earliest == suspend.time:
             return suspend
         else:
-            return self.others.pop()
+            return self.arrivals.pop()
 
     def put(self, event):
         """
@@ -53,4 +53,4 @@ class EventList(object):
             elif event.type == Event.FINISH:
                 self.finish = event
             else:
-                self.others.put(event, -event.time)
+                self.arrivals.put(event, -event.time)

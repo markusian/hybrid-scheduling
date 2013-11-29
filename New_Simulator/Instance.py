@@ -19,20 +19,20 @@ class Instance(object):
         else:
             self.deadline = float('inf')
         
-    def advance(self, since, to):
+    def advance(self, since, until):
         """
         Execute the instance to the given time.
         """
         logging.info(str(since) + ": Execute " + self.task.id + 
-                     " for " + str(to - since))
+                     " for " + str(until - since))
         # Compute statistics
         if self.interrupt == self.arrival:
             self.start = since
         elif self.interrupt != since:
-            self.idle += to - since
+            self.idle += until - since
 
-        self.remaining -= to - since
-        self.interrupt = to
+        self.remaining -= until - since
+        self.interrupt = until
 
     def event(self, since):
         """

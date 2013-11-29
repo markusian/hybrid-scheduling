@@ -13,7 +13,7 @@ class Server(object):
         self.waiting = PriorityQueue()
         self.priority = 0
 
-    def advance(self, since, to):
+    def advance(self, since, until):
         """
         Advance the server to the given time.
         Update its state.
@@ -100,9 +100,9 @@ class PollingServer(Server):
             
         return events
 
-    def advance(self, since, to):
+    def advance(self, since, until):
         if self.state == Server.ACTIVE:
-            self.current -= to - since
+            self.current -= until - since
             self.setState(Server.WAITING)
         elif self.state == Server.WAITING:
             pass
@@ -131,9 +131,9 @@ class PollingServer(Server):
             return None
 
 class DeferrableServer(PollingServer):
-    def advance(self, since, to):
+    def advance(self, since, until):
         if self.state == Server.ACTIVE:
-            self.current -= to - since
+            self.current -= until - since
             self.setState(Server.WAITING)
         elif self.state == Server.WAITING:
             pass
