@@ -3,13 +3,14 @@ from Server import Server, BackgroundServer, PollingServer, DeferrableServer
 from Event import Event, EventList
 from Task import PeriodicTask, AperiodicTask
 from PriorityQueue import PriorityQueue
+from ReadConfig import ReadConfig
 import logging
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(level = logging.INFO)
 
 class Simulator(object):
     def __init__(self) :
         self.waiting = PriorityQueue()
-        self.server = DeferrableServer(2, 5)
+        self.server = Server()
         self.active = None
         self.events = EventList()
         self.clock = 0
@@ -85,6 +86,16 @@ class Simulator(object):
         # Refill the server
         self.server.refill()
 
+    def load(self, filename):
+        """
+        Load a configuration from a file.
+        """
+        r = ReadConfig()
+        r.read(filename)
+
+        self.server = r.server
+        self.tasks = r.tasks
+
     def init(self, until):
         """
         Initialize the server to run until the given time.
@@ -97,11 +108,16 @@ class Simulator(object):
             self.events.put(e)
 
     def run(self):
+        """
+        Execute the simulation.
+        """
         next = self.events.next()
         while next is not None:
             self.advance(next.time)
 
-            logging.debug(str(self.clock) + ": Event " + next.type + " " + (next.instance.task.id if next.instance is not None else ""))
+            logging.debug(str(self.clock) + ": Event " + next.type + " " 
+                          + (next.instance.task.id 
+                              if next.instance is not None else ""))
 
             if next.type == Event.ARRIVAL:
                 self.reactArrival(next)
@@ -117,17 +133,6 @@ class Simulator(object):
 
 if __name__ == '__main__':
     s = Simulator()
-    
-    t1 = PeriodicTask('H1', 1, 4)
-    t2 = PeriodicTask('H2', 2, 6)
-
-    s1 = AperiodicTask('S1', 2, 2, 1)
-    s2 = AperiodicTask('S2', 1, 8, 1)
-    s3 = AperiodicTask('S3', 2, 12, 1)
-    s4 = AperiodicTask('S4', 1, 19, 1)
-
-    s.tasks = [t1, t2, s1, s2, s3, s4]
-
+    s.load("background.json")
     s.init(24)
-
     s.run()
