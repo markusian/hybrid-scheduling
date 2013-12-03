@@ -1,0 +1,18 @@
+{
+    "server": {"type": "deferrable", "capacity": 2, "period": 5},
+    "periodics" : [
+        {"id": "H1", "wcet": 8.8, "period": 40},
+        {"id": "H2", "wcet": 7.4, "period": 50},
+		    {"id": "H3", "wcet": 11.8, "period": 60},
+		    {"id": "H4", "wcet": 17.7, "period": 70},
+		    {"id": "H5", "wcet": 14.7, "period": 90}
+		
+	
+    ],
+    "aperiodics" : [
+        {"id": "S1", "wcet": 2, "release": 2, "priority": 1},
+        {"id": "S2", "wcet": 1, "release": 8, "priority": 1},
+        {"id": "S3", "wcet": 2, "release": 12, "priority": 1},
+        {"id": "S4", "wcet": 1, "release": 19, "priority": 1}
+    ]
+}
