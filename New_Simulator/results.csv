@@ -1,0 +1,14 @@
+Simulator results                            Date : 29/11/2013
+                                                  Runtime : 15
+Server : DeferrableServer
+Capacity : 2 Period : 5
+
+  id  | type |arriva|start |finish|comput| idle |deadli| TTD  
+    S1|  soft|     0|     0|     2|     2|     0|   inf|   inf
+    H1|  hard|     3|     3|     4|     1|     0|     7|     3
+    S1|  soft|     1|     5|     7|     2|     0|   inf|   inf
+    H1|  hard|     7|     7|     8|     1|     0|    11|     3
+    H2|  hard|     4|     4|     9|     2|     3|    10|     1
+    H1|  hard|    11|    11|    12|     1|     0|    15|     3
+    S1|  soft|     1|    10|    13|     2|     1|   inf|   inf
+    H2|  hard|    10|    13|    15|     2|     0|    16|     1
