@@ -3,12 +3,11 @@ from Task import PeriodicTask, AperiodicTask
 from Server import BackgroundServer, PollingServer
 from Instance import Instance
 
-AP_computation = 5
 P_loads = [0.25, 0.5]
 AP_loads = [0.01, 0.1]
-tasksets = [[PeriodicTask("HARD", 1, 3), 
-             PeriodicTask("HARD", 1, 4), 
-             PeriodicTask("HARD", 1, 6)]]
+tasksets = [[PeriodicTask("HARD", 1.3, 3), 
+             PeriodicTask("HARD", 1.3, 4), 
+             PeriodicTask("HARD", 1.3, 6)]]
 
 for taskset in tasksets:
     for ap_load in AP_loads:
@@ -18,7 +17,8 @@ for taskset in tasksets:
                 s = Simulator()
                 
                 # Set the server
-                s.server = PollingServer(3, PollingServer.util(3))
+                s.server = PollingServer(PollingServer.util(p_load) * 3, 3)
+                AP_computation = s.server.period * ap_load
 
                 # Scale the taskset
                 scaled = list(taskset)
@@ -35,9 +35,7 @@ for taskset in tasksets:
                 # Compute the execution time
                 # (100 times LCM)
                 until = PeriodicTask.lcm(scaled) * 10
-                print "Init ..."
                 s.init(until)
-                print "Run !"
                 s.run()
 
                 # Compute the average response time
