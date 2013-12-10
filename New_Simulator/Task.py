@@ -1,6 +1,7 @@
 from Instance import Instance
 from Event import Event
 from numpy import random
+import Gaussians
 
 class Task(object):
     def __init__(self, id):
@@ -23,7 +24,12 @@ class PeriodicTask(Task):
         events = list()
         i = random.uniform(0, self.period)
         while i < until:
-            instance = Instance(Instance.HARD, self, i, self.wcet, self.priority)
+            # Compute the computation time
+            computation = Gaussians.getRandomValue(Gaussians.getMean(self.wcet))
+            while computation < 0.0 or computation > self.wcet :
+                print "ERROR : " + str(computation)
+                computation = Gaussians.getRandomValue(Gaussians.getMean(self.wcet))
+            instance = Instance(Instance.HARD, self, i, computation, self.priority)
             event = Event(Event.ARRIVAL, i, instance)
             events.append(event)
             i += self.period

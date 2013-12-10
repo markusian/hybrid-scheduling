@@ -14,11 +14,11 @@ for taskset in tasksets:
     for ap_load in AP_loads:
         for p_load in P_loads:
             averages = list()
-            for i in range(100):
+            for i in range(10):
                 s = Simulator()
                 
                 # Set the server
-                s.server = PollingServer(2, 3)
+                s.server = PollingServer(3, PollingServer.util(3))
 
                 # Scale the taskset
                 scaled = list(taskset)
@@ -34,8 +34,10 @@ for taskset in tasksets:
 
                 # Compute the execution time
                 # (100 times LCM)
-                until = PeriodicTask.lcm(scaled) * 100
+                until = PeriodicTask.lcm(scaled) * 10
+                print "Init ..."
                 s.init(until)
+                print "Run !"
                 s.run()
 
                 # Compute the average response time

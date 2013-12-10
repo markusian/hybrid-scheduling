@@ -1,6 +1,8 @@
 from PriorityQueue import PriorityQueue
 from Event import Event
 import logging
+import math
+import numpy as np
 
 class Server(object):
     ACTIVE = "ACTIVE" # The server is executing on the simulator
@@ -130,6 +132,22 @@ class PollingServer(Server):
         else:
             return None
 
+    @staticmethod
+    def util(up):
+        """Returns the maximum polling server utilization factor for the given
+        periodic load up"""
+        exup = math.exp(up)
+        return (2.0/exup)-1
+
+    def ps_util_n(up,n):
+        a = 0.5*(1+up/n)**n
+        return 1./a -1
+
+    def ps_basic(up):
+        return math.log(2)-up 
+
+
+
 class DeferrableServer(PollingServer):
     def advance(self, since, until):
         if self.state == Server.ACTIVE:
@@ -139,3 +157,28 @@ class DeferrableServer(PollingServer):
             pass
         else:
             self.setState(Server.IDLE)
+
+    def util(up):
+        """Returns the maximum deferrable server utilization factor for the given
+        periodic load up"""
+        first = ds1(up)
+        if first > 1./3 and first < 1./2:
+            return first
+        else:
+            return ds2(up)
+
+    def ds1(up):
+        exup = math.exp(up)
+        return 1-exup/2.0
+
+    def ds2(up):
+        exup = math.exp(up)
+        sqrt_d = sqrt_delta(exup)
+        a_men = (1-2.0*exup)
+        x1 = (a_men + sqrt_d)/2.0
+        x2 = (a_men - sqrt_d)/2.0
+        return max([x1,x2])
+
+def sqrt_delta(up):
+    return math.sqrt(4*up*up-8*up+9)
+
