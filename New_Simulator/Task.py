@@ -3,6 +3,8 @@ from Event import Event
 from numpy import random
 import Gaussians
 
+LOWER_LIMIT = 4
+
 class Task(object):
     def __init__(self, id):
         self.id = id
@@ -19,16 +21,28 @@ class PeriodicTask(Task):
         self.priority = 1.0/float(period)
         self.wcet = wcet
         self.period = period
+        if wcet > LOWER_LIMIT:
+            self.__mean = Gaussians.getMean(wcet)
+            self.__big = True
+        else:
+            self.__big = False
+
+    def getNextExecutionTime(self):
+        if self.__big:
+            return Gaussians.getRandomValue(self.__mean)
+        else:
+            low_lim = self.wcet*0.1
+            return random.random_sample()*(self.wcet-low_lim) + low_lim
 
     def generateEvents(self, until):
         events = list()
         i = random.uniform(0, self.period)
         while i < until:
             # Compute the computation time
-            computation = Gaussians.getRandomValue(Gaussians.getMean(self.wcet))
+            computation = self.getNextExecutionTime()
             while computation < 0.0 or computation > self.wcet :
                 print "ERROR : " + str(computation)
-                computation = Gaussians.getRandomValue(Gaussians.getMean(self.wcet))
+                computation = self.getNextExecutionTime()
             instance = Instance(Instance.HARD, self, i, computation, self.priority)
             event = Event(Event.ARRIVAL, i, instance)
             events.append(event)
@@ -42,7 +56,7 @@ class PeriodicTask(Task):
         Compute LCM of period for a list of tasks (ignore aperiodic tasks)
         """
         def gcd(a, b):
-            while b:      
+            while b:
                 a, b = b, a % b
             return a
 
