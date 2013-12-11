@@ -94,7 +94,7 @@ class Simulator(object):
 
     def reactRefill(self, event):
         # Refill the server
-        self.server.refill(self.clock)
+        self.server.refill()
 
     def read(self, filename):
         """
@@ -190,7 +190,7 @@ class Simulator(object):
 
         plt.clf()
 
-        plt.subplot('211')
+        plt.subplot('311')
         y_pos = np.arange(len(self.tasks))
 
         for i in y_pos :
@@ -202,8 +202,11 @@ class Simulator(object):
 
         plt.yticks(y_pos, [task.id for task in self.tasks])
 
-        plt.subplot('212')
-        plt.plot(self.server.stats["times"], self.server.stats["capacities"])
+        plt.subplot('312')
+        plt.plot(self.server.stats["ctimes"], self.server.stats["cvalues"])
+
+        plt.subplot('313')
+        plt.plot(self.server.stats["itimes"], self.server.stats["ivalues"])
         plt.savefig(filename)
         
 if __name__ == '__main__':
