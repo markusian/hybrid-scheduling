@@ -1,4 +1,4 @@
-from PriorityQueue import PriorityQueue
+from Queue import FIFO
 from Event import Event
 import logging
 import math
@@ -12,7 +12,7 @@ class Server(object):
 
     def __init__(self):
         self.setState(Server.IDLE)
-        self.waiting = PriorityQueue()
+        self.waiting = FIFO()
         self.priority = 0
         self.stats = dict()
         self.stats["times"] = list()
@@ -38,7 +38,7 @@ class Server(object):
         """
         Put an instance on the server.
         """
-        self.waiting.put(instance, instance.priority)
+        self.waiting.put(instance)
 
         self.setState(Server.WAITING)
 

@@ -9,7 +9,7 @@ class Event(object):
         self.time = time
         self.instance = instance
 
-from PriorityQueue import PriorityQueue
+from Queue import PriorityQueue
 
 class EventList(object):
     def __init__(self):

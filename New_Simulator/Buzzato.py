@@ -13,15 +13,16 @@ for i in range(0,10):
     taskset.append(t)
 
 for load in [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]:
+#for load in [0.3]:
     # Try the simulator
     s = Simulator()
 
     server_period = min([t.period for t in taskset])
     server_capacity = server_period * 0.248
-    s.server = PollingServer(server_capacity, server_period)
+    #s.server = PollingServer(server_capacity, server_period)
     server_capacity = server_period * 0.239
     #s.server = DeferrableServer(server_capacity, server_period)
-    #s.server = BackgroundServer()
+    s.server = BackgroundServer()
 
     for t in taskset:
         s.tasks.append(t)

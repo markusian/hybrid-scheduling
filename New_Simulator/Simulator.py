@@ -2,7 +2,7 @@ from Instance import Instance
 from Server import Server, BackgroundServer, PollingServer, DeferrableServer
 from Event import Event, EventList
 from Task import PeriodicTask, AperiodicTask
-from PriorityQueue import PriorityQueue
+from Queue import PriorityQueue
 from ReadConfig import ReadConfig
 from Statistics import Statistics
 from datetime import date
