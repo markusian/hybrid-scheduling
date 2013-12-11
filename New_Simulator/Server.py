@@ -99,7 +99,7 @@ class PollingServer(Server):
             event = Event(Event.REFILL, i)
             events.append(event)
             i += self.period
-            
+
         return events
 
     def advance(self, since, until):
@@ -144,7 +144,7 @@ class PollingServer(Server):
         return 1./a -1
 
     def ps_basic(up):
-        return math.log(2)-up 
+        return math.log(2)-up
 
 
 
@@ -158,19 +158,29 @@ class DeferrableServer(PollingServer):
         else:
             self.setState(Server.IDLE)
 
+    @staticmethod
     def util(up):
         """Returns the maximum deferrable server utilization factor for the given
-        periodic load up"""
-        first = ds1(up)
+        periodic load up, version 1"""
+        first = DeferrableServer.ds1(up)
         if first > 1./3 and first < 1./2:
             return first
         else:
-            return ds2(up)
+            return DeferrableServer.ds2(up)
+    @staticmethod
+    def util2(up):
+        """Returns the maximum deferrable server utilization factor for the given
+        periodic load up, version 2"""
+        exup = math.exp(up)
+        return (2-exup)/(2*exup-1)
 
+
+    @staticmethod
     def ds1(up):
         exup = math.exp(up)
         return 1-exup/2.0
 
+    @staticmethod
     def ds2(up):
         exup = math.exp(up)
         sqrt_d = sqrt_delta(exup)
