@@ -23,8 +23,9 @@ class PeriodicTask(Task):
         self.period = period
 
     def getNextExecutionTime(self):
-        low_lim = self.wcet*0.7
-        return random.random_sample()*(self.wcet-low_lim) + low_lim
+#        low_lim = self.wcet*0.7
+#        return random.random_sample()*(self.wcet-low_lim) + low_lim
+        return self.wcet
 
     def generateEvents(self, until):
         events = list()

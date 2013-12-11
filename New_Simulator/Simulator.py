@@ -7,7 +7,7 @@ from ReadConfig import ReadConfig
 from Statistics import Statistics
 from datetime import date
 import logging
-logging.basicConfig(level = logging.WARNING)
+logging.basicConfig(level = logging.DEBUG)
 
 class Simulator(object):
     def __init__(self) :
@@ -107,6 +107,8 @@ class Simulator(object):
         If -1 is given, run until the LCM of periodic tasks.
         """
 
+        logging.debug("Initialization until " + str(until))
+        
         if (until == -1):
             until = PeriodicTask.lcm(self.tasks)
 
