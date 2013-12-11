@@ -9,8 +9,8 @@ from copy import deepcopy
 from time import time
 
 OUTPUT_FOLDER = "results_q1/"
-PERIODIC_LOADS = [0.20, 0.4]
-APERIODIC_EXECUTION_TIME = [0.02, 0.04]
+PERIODIC_LOADS = [0.20, 0.40]
+APERIODIC_EXECUTION_TIME = [0.04, 0.02]
 NUM_HYPERPERIODS = 1 #number of hyperperiods to consider
 MAX_TOTAL_LOAD = 0.60 #maximum total load considered
 MIN_AP_LOAD = 0.01 #minimum aperiodic load
@@ -51,8 +51,8 @@ def simulationLoop(server, capacity, period, scaled, ex_time, int_time):
                           (i.finish - i.arrival)) / float(total + 1)
                 total += 1
 
-        s.render(server + '.svg')
-        sys.exit()
+        #s.render(server + '.svg')
+        #sys.exit()
         return average
 
 res = dict()
@@ -76,7 +76,6 @@ for p_load in PERIODIC_LOADS:
     scaled = deepcopy(list(taskset))
     for t in scaled:
         t.wcet = t.wcet * p_load
-        #why there was an int here?
 
     # Compute the execution time
     until = PeriodicTask.lcm(scaled)*NUM_HYPERPERIODS
@@ -87,12 +86,11 @@ for p_load in PERIODIC_LOADS:
         res[p_load][ap_ex_time]['def'] = dict()
         res[p_load][ap_ex_time]['bac'] = dict()
 
-
         # Compute variables for the server
-        util = PollingServer.util(p_load)*1.0
-        util_def = DeferrableServer.util2(p_load)*1.0
+        util = PollingServer.util(p_load)
+        util_def = DeferrableServer.util2(p_load)
 
-        period = min([t.period for t in scaled])*0.98
+        period = min([t.period for t in scaled])*1
         capacity = util * period
         capacity_def = util_def * period
 
