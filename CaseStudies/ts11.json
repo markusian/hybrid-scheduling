@@ -1,0 +1,14 @@
+{
+    "periodics" : [
+        {"id": "H1", "wcet": 87.7, "period": 877},
+        {"id": "H2", "wcet": 45.8, "period": 458},
+        {"id": "H3", "wcet": 34.4, "period": 344},
+        {"id": "H4", "wcet": 106.5, "period": 1065},
+        {"id": "H5", "wcet": 81.7, "period": 817},
+        {"id": "H6", "wcet": 69.6, "period": 696},
+        {"id": "H7", "wcet": 69.8, "period": 698},
+        {"id": "H8", "wcet": 34.4, "period": 344},
+        {"id": "H9", "wcet": 21.5, "period": 215},
+        {"id": "H10", "wcet": 28.3, "period": 283}
+    ]
+}

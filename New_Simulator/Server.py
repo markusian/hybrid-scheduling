@@ -15,14 +15,18 @@ class Server(object):
         self.waiting = FIFO()
         self.priority = 0
         self.stats = dict()
-        self.stats["times"] = list()
-        self.stats["capacities"] = list()
+        self.stats["ctimes"] = list()
+        self.stats["cvalues"] = list()
+        self.stats["itimes"] = list()
+        self.stats["ivalues"] = list()
+        self.time = 0
 
     def advance(self, since, until):
         """
         Advance the server to the given time.
         Update its state.
         """
+        self.time = until
         if self.state == Server.ACTIVE:
             self.setState(Server.WAITING)
 
@@ -38,7 +42,13 @@ class Server(object):
         """
         Put an instance on the server.
         """
+        self.stats["itimes"].append(self.time)
+        self.stats["ivalues"].append(len(self.waiting.list))
+
         self.waiting.put(instance)
+
+        self.stats["itimes"].append(self.time)
+        self.stats["ivalues"].append(len(self.waiting.list))
 
         self.setState(Server.WAITING)
 
@@ -70,7 +80,13 @@ class Server(object):
         """
         Return the most priority instance and remove it from the waiting list.
         """
+        self.stats["itimes"].append(self.time)
+        self.stats["ivalues"].append(len(self.waiting.list))
+
         instance = self.waiting.pop()
+
+        self.stats["itimes"].append(self.time)
+        self.stats["ivalues"].append(len(self.waiting.list))
 
         if self.waiting.isEmpty():
             self.setState(Server.IDLE)
@@ -95,12 +111,12 @@ class PollingServer(Server):
         self.current = 0
         self.priority = 1.0/float(period)
 
-    def setCapacity(self, time, value):
-        self.stats["times"].append(time)
-        self.stats["capacities"].append(self.current)
+    def setCapacity(self, value):
+        self.stats["ctimes"].append(self.time)
+        self.stats["cvalues"].append(self.current)
 
-        self.stats["times"].append(time)
-        self.stats["capacities"].append(value)
+        self.stats["ctimes"].append(self.time)
+        self.stats["cvalues"].append(value)
 
         self.current = value
 
@@ -115,13 +131,14 @@ class PollingServer(Server):
         return events
 
     def advance(self, since, until):
+        self.time = until
         if self.state == Server.ACTIVE:
-            self.setCapacity(until, self.current - (until - since))
+            self.setCapacity(self.current - (until - since))
             self.setState(Server.WAITING)
         elif self.state == Server.WAITING:
             pass
         else:
-            self.setCapacity(until, 0)
+            self.setCapacity(0)
             self.setState(Server.IDLE)
 
     def put(self, instance):
@@ -130,8 +147,8 @@ class PollingServer(Server):
         if self.current <= 0:
             self.setState(Server.SUSPENDED)
 
-    def refill(self, time):
-        self.setCapacity(time, self.capacity)
+    def refill(self):
+        self.setCapacity(self.capacity)
 
         if self.waiting.isEmpty():
             self.setState(Server.IDLE)
@@ -163,7 +180,7 @@ class PollingServer(Server):
 class DeferrableServer(PollingServer):
     def advance(self, since, until):
         if self.state == Server.ACTIVE:
-            self.setCapacity(until, self.current - (until - since))
+            self.setCapacity(self.current - (until - since))
             self.setState(Server.WAITING)
         elif self.state == Server.WAITING:
             pass
