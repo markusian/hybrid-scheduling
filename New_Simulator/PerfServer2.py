@@ -2,7 +2,7 @@ import sys
 import json
 from numpy import arange, linspace
 from Task import PeriodicTask, AperiodicTask
-from Server import PollingServer, DeferrableServer
+from Server import PollingServer, DeferrableServer, BackgroundServer
 from Simulator import Simulator
 from Instance import Instance
 from copy import deepcopy
@@ -46,6 +46,8 @@ for p_load in PERIODIC_LOADS:
         res[p_load][ap_ex_time] = dict()
         res[p_load][ap_ex_time]['pol'] = dict()
         res[p_load][ap_ex_time]['def'] = dict()
+        res[p_load][ap_ex_time]['bac'] = dict()
+
 
         # Compute variables for the server
         util = PollingServer.util(p_load)*1.0
@@ -137,7 +139,40 @@ for p_load in PERIODIC_LOADS:
 
             res[p_load][ap_ex_time]['def'][ap_load] = average
 
-            #s.write('olll.txt')
+            #BACKGROUND!!!
+            s = Simulator()
+
+            # Set the server
+            s.server = BackgroundServer()
+
+            # Load the taskset
+            for t in scaled:
+                s.tasks.append(t)
+
+            # Create the aperiodic task
+            ap = AperiodicTask("Soft", ex_time, int_time)
+            s.tasks.append(ap)
+
+            # RUUUUUUUUN !!!
+            s.init(until)
+            s.run()
+
+            # Compute the average response time
+            total = 0
+            average = 0
+            for i in s.statistics.instances:
+                if i.type == Instance.SOFT:
+                    average = float(average * total +
+                              (i.finish - i.arrival)) / float(total + 1)
+                    total += 1
+                else:
+                    pass
+                    #print i.time_to_deadline
+                    #if i.time_to_deadline < 0:
+                    #    print "Error"
+
+            res[p_load][ap_ex_time]['bac'][ap_load] = average
+
 
 print "ELAPSED TIME: ",  time() - start
 fi = open(OUTPUT_FOLDER + sys.argv[1].split('/')[-1],'w')
