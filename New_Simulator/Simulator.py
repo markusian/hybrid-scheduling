@@ -188,6 +188,8 @@ class Simulator(object):
         Render the graph of execution.
         """
 
+        plt.clf()
+
         plt.subplot('211')
         y_pos = np.arange(len(self.tasks))
 

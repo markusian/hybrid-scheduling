@@ -10,9 +10,7 @@ class FIFO(object):
         return len(self.list) == 0
 
     def pop(self):
-        ret = self.list[0]
-        self.list.remove(self.list[0])
-        return ret
+        return self.list.pop(0)
 
     def first(self):
         return self.list[0]
