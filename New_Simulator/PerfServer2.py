@@ -50,6 +50,9 @@ def simulationLoop(server, capacity, period, scaled, ex_time, int_time):
                 average = float(average * total +
                           (i.finish - i.arrival)) / float(total + 1)
                 total += 1
+
+        s.render(server + '.svg')
+        sys.exit()
         return average
 
 res = dict()
@@ -89,7 +92,7 @@ for p_load in PERIODIC_LOADS:
         util = PollingServer.util(p_load)*1.0
         util_def = DeferrableServer.util2(p_load)*1.0
 
-        period = min([t.period for t in scaled])
+        period = min([t.period for t in scaled])*0.98
         capacity = util * period
         capacity_def = util_def * period
 
@@ -103,7 +106,7 @@ for p_load in PERIODIC_LOADS:
         ex_time = period * ap_ex_time
 
         APERIODIC_LOAD = linspace(MIN_AP_LOAD, MAX_TOTAL_LOAD-p_load, NUM_POINTS)
-        print "APERIODIC LOADS: ", APERIODIC_LOAD
+        #print "APERIODIC LOADS: ", APERIODIC_LOAD
 
         for ap_load in APERIODIC_LOAD:
             int_time = ex_time / ap_load
@@ -116,6 +119,7 @@ for p_load in PERIODIC_LOADS:
 
             av = simulationLoop('background', capacity, period, scaled, ex_time, int_time)
             res[p_load][ap_ex_time]['bac'][ap_load] = av
+
 
 
 
