@@ -175,5 +175,5 @@ for p_load in PERIODIC_LOADS:
 
 
 print "ELAPSED TIME: ",  time() - start
-fi = open(OUTPUT_FOLDER + sys.argv[1].split('/')[-1],'w')
+fi = open(OUTPUT_FOLDER + sys.argv[1].split('/')[-1].split('\\')[-1],'w')
 json.dump(res,fi)
