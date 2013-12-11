@@ -1,6 +1,7 @@
 from Task import PeriodicTask, AperiodicTask
 from Simulator import Simulator
-from Server import PollingServer
+from Server import PollingServer, BackgroundServer, DeferrableServer
+from Instance import Instance
 
 periods = [877, 458, 344, 1065, 817, 696, 698, 344, 215, 283]
 wcet = [i * 0.069 for i in periods]
@@ -18,6 +19,9 @@ for load in [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]:
     server_period = min([t.period for t in taskset])
     server_capacity = server_period * 0.248
     s.server = PollingServer(server_capacity, server_period)
+    server_capacity = server_period * 0.239
+    #s.server = DeferrableServer(server_capacity, server_period)
+    #s.server = BackgroundServer()
 
     for t in taskset:
         s.tasks.append(t)
@@ -30,6 +34,7 @@ for load in [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]:
     s.tasks.append(t)
 
     until = PeriodicTask.lcm(taskset)
+    until = 100000
     s.init(until)
     s.run()
 
@@ -37,9 +42,10 @@ for load in [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]:
     total = 0
     average = 0
     for i in s.statistics.instances:
-        if i.type == Instance.SOFT:
+        if i.type == Instance.SOFT and i.finished:
             average = float(average * total +
                       (i.finish - i.arrival)) / float(total + 1)
             total += 1
 
     print str(load) + ":" + str(average)
+    #s.render(str(load) + ".svg")

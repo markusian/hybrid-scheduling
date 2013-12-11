@@ -9,11 +9,14 @@ class Instance(object):
         self.type = type
         self.task = task
         self.arrival = arrival
+        self.start = None
         self.computation = computation
         self.remaining = computation
         self.idle = 0
         self.interrupt = arrival
         self.priority = priority
+        self.executed = list()
+        self.finished = False
         if self.type == Instance.HARD:
             self.deadline = arrival + task.period
         else:
@@ -29,6 +32,11 @@ class Instance(object):
 
         logging.info(str(since) + ": Execute " + self.task.id + 
                      " for " + str(until - since))
+        if self.start is not None and self.interrupt == since:
+            self.executed[-1] = (self.executed[-1][0], until)
+        else :
+            self.executed.append((since, until))
+
         # Compute statistics
         if self.interrupt == self.arrival:
             self.start = since
@@ -49,4 +57,8 @@ class Instance(object):
         At the end of the execution, compute statistics.
         """
         self.finish = self.interrupt
+        self.finished = True
         self.time_to_deadline = self.deadline - self.finish
+
+        if self.finish > self.deadline:
+            logging.warning("Deadline miss !")

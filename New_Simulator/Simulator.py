@@ -7,7 +7,11 @@ from ReadConfig import ReadConfig
 from Statistics import Statistics
 from datetime import date
 import logging
-logging.basicConfig(level = logging.DEBUG)
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+#logging.basicConfig(level = logging.DEBUG)
 
 class Simulator(object):
     def __init__(self) :
@@ -18,6 +22,7 @@ class Simulator(object):
         self.clock = 0
         self.tasks = []
         self.statistics = Statistics()
+        self.until = 0
 
     def update(self):
         """
@@ -89,7 +94,7 @@ class Simulator(object):
 
     def reactRefill(self, event):
         # Refill the server
-        self.server.refill()
+        self.server.refill(self.clock)
 
     def read(self, filename):
         """
@@ -113,18 +118,21 @@ class Simulator(object):
             until = PeriodicTask.lcm(self.tasks)
 
         for t in self.tasks:
+            logging.debug("Generating events for " + str(t.id))
             for e in t.generateEvents(until):
                 self.events.put(e)
 
         for e in self.server.generateEvents(until):
             self.events.put(e)
 
+        self.until = until
+
     def run(self):
         """
         Execute the simulation.
         """
         next = self.events.next()
-        while next is not None:
+        while next is not None and next.time < self.until:
             self.advance(next.time)
 
             logging.debug(str(self.clock) + ": Event " + next.type + " " 
@@ -175,6 +183,27 @@ class Simulator(object):
 
         self.statistics.write(file, col=col)
 
+    def render(self, filename):
+        """
+        Render the graph of execution.
+        """
+
+        plt.subplot('211')
+        y_pos = np.arange(len(self.tasks))
+
+        for i in y_pos :
+            t = self.tasks[i]
+            for instance in t.instances:
+                for time in instance.executed:
+                    plt.barh(i-0.5, time[1] - time[0], left = time[0], height=1.0)
+                plt.plot(instance.arrival, i, "r+")
+
+        plt.yticks(y_pos, [task.id for task in self.tasks])
+
+        plt.subplot('212')
+        plt.plot(self.server.stats["times"], self.server.stats["capacities"])
+        plt.savefig(filename)
+        
 if __name__ == '__main__':
     s = Simulator()
     s.read("test.json")

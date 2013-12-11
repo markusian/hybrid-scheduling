@@ -2,12 +2,14 @@ from Instance import Instance
 from Event import Event
 from numpy import random
 import Gaussians
+import logging
 
 LIMIT_ARRIVAL_TIME = 6
 
 class Task(object):
     def __init__(self, id):
         self.id = id
+        self.instances = list()
 
     def generateEvents(self, until):
         """
@@ -31,6 +33,7 @@ class PeriodicTask(Task):
         events = list()
         i = random.uniform(0, LIMIT_ARRIVAL_TIME)
         while i < until:
+            logging.debug("Generate event at time " + str(i))
             # Compute the computation time
             computation = self.getNextExecutionTime()
             while computation < 0.0 or computation > self.wcet :
@@ -38,6 +41,7 @@ class PeriodicTask(Task):
                 print "WCET: " + str(self.wcet)
                 computation = self.getNextExecutionTime()
             instance = Instance(Instance.HARD, self, i, computation, self.priority)
+            self.instances.append(instance)
             event = Event(Event.ARRIVAL, i, instance)
             events.append(event)
             i += self.period
@@ -82,6 +86,7 @@ class AperiodicTask(Task):
         while i < until:
             computation = random.exponential(self.computation)
             instance = Instance(Instance.SOFT, self, i, computation, self.priority)
+            self.instances.append(instance)
             event = Event(Event.ARRIVAL, i, instance)
             events.append(event)
             i += random.poisson(self.release)
