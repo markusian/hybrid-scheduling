@@ -16,6 +16,42 @@ MAX_TOTAL_LOAD = 0.60 #maximum total load considered
 MIN_AP_LOAD = 0.01 #minimum aperiodic load
 NUM_POINTS = 10 # number of points to consider for the aperiodic load range
 
+
+def simulationLoop(server, capacity, period, scaled, ex_time, int_time):
+        s = Simulator()
+
+        # Set the server
+        if server == 'polling':
+            s.server = PollingServer(capacity, period)
+        elif server == 'deferrable':
+            s.server = DeferrableServer(capacity, period)
+        else:
+            s.server = BackgroundServer()
+
+
+        # Load the taskset
+        for t in scaled:
+            s.tasks.append(t)
+
+        # Create the aperiodic task
+        ap = AperiodicTask("Soft", ex_time, int_time)
+        s.tasks.append(ap)
+
+
+        # RUUUUUUUUN !!!
+        s.init(until)
+        s.run()
+
+        # Compute the average response time
+        total = 0
+        average = 0
+        for i in s.statistics.instances:
+            if i.type == Instance.SOFT:
+                average = float(average * total +
+                          (i.finish - i.arrival)) / float(total + 1)
+                total += 1
+        return average
+
 res = dict()
 start = time()
 file = open(sys.argv[1], 'rb')
@@ -72,108 +108,20 @@ for p_load in PERIODIC_LOADS:
         for ap_load in APERIODIC_LOAD:
             int_time = ex_time / ap_load
 
+            av = simulationLoop('polling', capacity, period, scaled, ex_time, int_time)
+            res[p_load][ap_ex_time]['pol'][ap_load] = av
 
-            #POLLING!
-            s = Simulator()
+            av = simulationLoop('deferrable', capacity_def, period, scaled, ex_time, int_time)
+            res[p_load][ap_ex_time]['def'][ap_load] = av
 
-            # Set the server
-            s.server = PollingServer(capacity, period)
-
-            # Load the taskset
-            for t in scaled:
-                s.tasks.append(t)
-
-            # Create the aperiodic task
-            ap = AperiodicTask("Soft", ex_time, int_time)
-            s.tasks.append(ap)
-
-
-            # RUUUUUUUUN !!!
-            s.init(until)
-            s.run()
-
-            # Compute the average response time
-            total = 0
-            average = 0
-            for i in s.statistics.instances:
-                if i.type == Instance.SOFT:
-                    average = float(average * total +
-                              (i.finish - i.arrival)) / float(total + 1)
-                    total += 1
-
-            res[p_load][ap_ex_time]['pol'][ap_load] = average
+            av = simulationLoop('background', capacity, period, scaled, ex_time, int_time)
+            res[p_load][ap_ex_time]['bac'][ap_load] = av
 
 
 
-            #DEFERRABLE!!!
-            s = Simulator()
 
-            # Set the server
-            s.server = DeferrableServer(capacity_def, period)
-
-            # Load the taskset
-            for t in scaled:
-                s.tasks.append(t)
-
-            # Create the aperiodic task
-            ap = AperiodicTask("Soft", ex_time, int_time)
-            s.tasks.append(ap)
-
-            # RUUUUUUUUN !!!
-            s.init(until)
-            s.run()
-
-            # Compute the average response time
-            total = 0
-            average = 0
-            for i in s.statistics.instances:
-                if i.type == Instance.SOFT:
-                    average = float(average * total +
-                              (i.finish - i.arrival)) / float(total + 1)
-                    total += 1
-                else:
-                    pass
-                    #print i.time_to_deadline
-                    #if i.time_to_deadline < 0:
-                    #    print "Error"
-
-            res[p_load][ap_ex_time]['def'][ap_load] = average
-
-            #BACKGROUND!!!
-            s = Simulator()
-
-            # Set the server
-            s.server = BackgroundServer()
-
-            # Load the taskset
-            for t in scaled:
-                s.tasks.append(t)
-
-            # Create the aperiodic task
-            ap = AperiodicTask("Soft", ex_time, int_time)
-            s.tasks.append(ap)
-
-            # RUUUUUUUUN !!!
-            s.init(until)
-            s.run()
-
-            # Compute the average response time
-            total = 0
-            average = 0
-            for i in s.statistics.instances:
-                if i.type == Instance.SOFT:
-                    average = float(average * total +
-                              (i.finish - i.arrival)) / float(total + 1)
-                    total += 1
-                else:
-                    pass
-                    #print i.time_to_deadline
-                    #if i.time_to_deadline < 0:
-                    #    print "Error"
-
-            res[p_load][ap_ex_time]['bac'][ap_load] = average
 
 
 print "ELAPSED TIME: ",  time() - start
-fi = open(OUTPUT_FOLDER + sys.argv[1].split('/')[-1],'w')
+fi = open(OUTPUT_FOLDER + sys.argv[1].split('/')[-1].split('\\')[-1],'w')
 json.dump(res,fi)
