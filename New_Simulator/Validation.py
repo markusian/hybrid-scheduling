@@ -17,8 +17,31 @@ MIN_AP_LOAD = 0.01 #minimum aperiodic load
 NUM_POINTS = 10 # number of points to consider for the aperiodic load range
 MAX_AP_LOAD = 0.20
 
+def computeAverage(filename):
+    fi = open(filename, 'r')
+    somma = 0.0
+    total_comp_ap = 0.0
+    n = 0.0
+    lines = fi.readlines()[3:-3]
+    #print lines, filename
+    for line in lines:
+        line_split = line.split('|')
+        if line_split[1] != '  HARD':
+            n = n+1
+            finish = float(line_split[4])
+            start = float(line_split[2])
+
+            somma = somma + (finish-start)
+            total_comp_ap = total_comp_ap + float(line_split[5])
+    return somma/n
+
+
+
+
+
 def simulationLoop(server, capacity, period, scaled, ex_time, int_time):
-        s = Simulator()
+        name = server + ".csv"
+        s = Simulator(stats = name)
 
         # Set the server
         if server == 'polling':
@@ -42,18 +65,8 @@ def simulationLoop(server, capacity, period, scaled, ex_time, int_time):
         s.init(until)
         s.run()
 
-        # Compute the average response time
-        total = 0
-        average = 0
-        for i in s.statistics.instances:
-            if i.type == Instance.SOFT:
-                average = float(average * total +
-                          (i.finish - i.arrival)) / float(total + 1)
-                total += 1
 
-        #s.render(server + '.svg')
-        #sys.exit()
-        return average
+        return computeAverage(name)
 
 res = dict()
 start = time()
@@ -75,7 +88,7 @@ for p_load in PERIODIC_LOADS:
     # Compute the execution time
     #until = PeriodicTask.lcm(scaled)*NUM_HYPERPERIODS
     print "HYPERPERIOD", PeriodicTask.lcm(scaled)
-    until = 1000000
+    until = 200000
     res[p_load]['pol'] = dict()
     res[p_load]['def'] = dict()
     res[p_load]['bac'] = dict()
@@ -84,8 +97,7 @@ for p_load in PERIODIC_LOADS:
     util = 0.248
     util_def = 0.239
 
-    period = 18
-    #period = min([t.period for t in scaled])*1
+    period = 18*0.5
     capacity = util * period
     capacity_def = util_def * period
 
