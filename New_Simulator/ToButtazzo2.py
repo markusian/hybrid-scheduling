@@ -9,33 +9,29 @@ from copy import deepcopy
 from time import time
 
 OUTPUT_FOLDER = "results_q1/"
-filename = '../CaseStudies/ts11.json'
+filename = '../CaseStudies/ts13.json'
 
-PERIODIC_LOADS = [0.20, 0.40, 0.60]
-MAX_TOTAL_LOAD = 0.60 #maximum total load considered
+PERIODIC_LOADS = [0.20, 0.40]
 MIN_AP_LOAD = 0.01 #minimum aperiodic load
 NUM_POINTS = 9 # number of points to consider for the aperiodic load range
 MAX_AP_LOAD = 0.20
-until = 100000
+until = 400000
 
 
 def computeAverage(filename):
     fi = open(filename, 'r')
     somma = 0.0
-    total_comp_ap = 0.0
     n = 0.0
     lines = fi.readlines()[3:-3]
     #print lines, filename
     for line in lines:
         line_split = line.split('|')
-        if line_split[1] != '  HARD':
+        if line_split[1].strip() == 'SOFT':
             n = n+1
             finish = float(line_split[4])
             start = float(line_split[2])
-
             somma = somma + (finish-start)
-            total_comp_ap = total_comp_ap + float(line_split[5])
-    return somma/n, total_comp_ap/n
+    return somma/n, 0
 
 
 
@@ -108,13 +104,6 @@ for p_load in PERIODIC_LOADS:
     print "\tUTIL DEFERRABLE: " + str(util_def)
     print "*"*40
 
-
-    if util_def <= 0 or util_def > 1.0:
-        print "Error!!!! ", capacity_def
-        raise Exception("Problem with deferrable server")
-
-
-
     APERIODIC_LOAD = linspace(MIN_AP_LOAD, MAX_AP_LOAD, NUM_POINTS)
 
     for ap_load in APERIODIC_LOAD:
@@ -133,8 +122,6 @@ for p_load in PERIODIC_LOADS:
         res[p_load]['bac'][ap_load] = avb[0]
 
         print "POL: " +str(avp[0]) + "\tDEF: " +str(avd[0]) + "\tBAC: " +str(avb[0])
-        #print "MEAN EX --- POL: " +str(avp[1]) + "\tDEF: " +str(avd[1]) + "\tBAC: " +str(avb[1])
-        sys.exit()
 
 
 

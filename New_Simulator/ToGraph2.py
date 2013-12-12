@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 OUTPUT_FOLDER = "results_q1/"
 IMAGES_FOLDER = OUTPUT_FOLDER + "images/"
 
-PERIODIC_LOADS = [0.20, 0.40, 0.60]
+PERIODIC_LOADS = [0.20, 0.40]
 
 
 def getxy(li,pload):
@@ -22,7 +22,7 @@ def getxy(li,pload):
     y = [float(i) for i in ordered.values()]
     return x,y
 
-indexes = [11]
+indexes = [11,12,13]
 
 for i in indexes:
     fi = open(OUTPUT_FOLDER + "ts" + str(i) + ".json")
