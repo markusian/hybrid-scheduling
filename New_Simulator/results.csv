@@ -1,11 +1,10 @@
-Simulator results                            Date : 11/12/2013
-                                       Runtime : 11.9378303676
-Server : DeferrableServer
-Capacity : 2 Period : 5
+Simulator results                            Date : 12/12/2013
 
   id  | type |arriva|start |finish|comput| idle |deadli| TTD  
-    S1|  soft|     2|     2|3.0928|1.0928|     0|   inf|   inf
-    H1|  hard|3.9378|3.9378|4.9378|     1|     0|7.9378|   3.0
-    S1|  soft|     4|4.9378|4.9581|0.0203|     0|   inf|   inf
-    H2|  hard|1.1213|1.1213|5.2345|     2|2.1131|7.1213|1.8868
-    H1|  hard|7.9378|7.9378|8.9378|     1|     0|11.937|   3.0
+    H1|  HARD|0.8937|0.8937|1.8652|0.9715|     0|4.8937|3.0284
+    H2|  HARD|2.3659|2.3659|4.1816|1.8157|     0|8.3659|4.1842
+    H1|  HARD|4.8937|4.8937|5.6699|0.7762|     0|8.8937|3.2237
+    H1|  HARD|8.8937|8.8937|9.6588|0.7651|     0|12.893|3.2348
+                                                  Runtime : 10
+Server : PollingServer
+Capacity : 2 Period : 5

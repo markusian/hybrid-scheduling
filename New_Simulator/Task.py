@@ -23,30 +23,26 @@ class PeriodicTask(Task):
         self.priority = 1.0/float(period)
         self.wcet = wcet
         self.period = period
+        self.first = True
 
     def getNextExecutionTime(self):
-#        low_lim = self.wcet*0.7
-#        return random.random_sample()*(self.wcet-low_lim) + low_lim
-        return self.wcet
+        low_lim = self.wcet*0.7
+        return random.random_sample()*(self.wcet-low_lim) + low_lim
 
-    def generateEvents(self, until):
-        events = list()
-        i = random.uniform(0, LIMIT_ARRIVAL_TIME)
-        while i < until:
-            logging.debug("Generate event at time " + str(i))
-            # Compute the computation time
-            computation = self.getNextExecutionTime()
-            while computation < 0.0 or computation > self.wcet :
-                print "ERROR : " + str(computation)
-                print "WCET: " + str(self.wcet)
-                computation = self.getNextExecutionTime()
-            instance = Instance(Instance.HARD, self, i, computation, self.priority)
-            self.instances.append(instance)
-            event = Event(Event.ARRIVAL, i, instance)
-            events.append(event)
-            i += self.period
-
-        return events
+    def nextArrival(self, time):
+        """
+        Compute the next arrival event, based on the given time.
+        Return the event
+        """
+        if self.first:
+            arrival = random.uniform(0, LIMIT_ARRIVAL_TIME)
+            self.first = False
+        else:
+            arrival = time + self.period
+        computation = self.getNextExecutionTime()
+        instance = Instance(Instance.HARD, self, arrival, computation, self.priority)
+        event = Event(Event.ARRIVAL, arrival, instance)
+        return event
 
     @staticmethod
     def lcm(tasks):
@@ -79,15 +75,15 @@ class AperiodicTask(Task):
         self.computation = computation
         self.release = release
         self.priority = 0
+        self.last_arrival = 0
 
-    def generateEvents(self, until):
-        events = list()
-        i = random.poisson(self.release)
-        while i < until:
-            computation = random.exponential(self.computation)
-            instance = Instance(Instance.SOFT, self, i, computation, self.priority)
-            self.instances.append(instance)
-            event = Event(Event.ARRIVAL, i, instance)
-            events.append(event)
-            i += random.poisson(self.release)
-        return events
+    def nextArrival(self, time):
+        """
+        Compute the next arrival event
+        Return the event
+        """
+        arrival = time + random.poisson(self.release)
+        computation = random.exponential(self.computation)
+        instance = Instance(Instance.SOFT, self, arrival, computation, self.priority)
+        event = Event(Event.ARRIVAL, arrival, instance)
+        return event

@@ -12,10 +12,10 @@ for i in range(0,10):
     t = PeriodicTask("H" + str(i), wcet[i], periods[i])
     taskset.append(t)
 
-for load in [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]:
-#for load in [0.05]:
+#for load in [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]:
+for load in [0.05]:
     # Try the simulator
-    s = Simulator()
+    s = Simulator(render = "results.svg")
 
     server_period = min([t.period for t in taskset])
     server_period = 18  
@@ -38,18 +38,6 @@ for load in [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]:
     s.tasks.append(t)
 
     until = PeriodicTask.lcm(taskset)
-    until = 100000
+    until = 1000
     s.init(until)
     s.run()
-
-    # Compute the average response time
-    total = 0
-    average = 0
-    for i in s.statistics.instances:
-        if i.type == Instance.SOFT and i.finished:
-            average = float(average * total +
-                      (i.finish - i.arrival)) / float(total + 1)
-            total += 1
-
-    print str(load) + ":" + str(average)
-    #s.render(str(load) + ".svg")

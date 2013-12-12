@@ -70,6 +70,9 @@ class Server(object):
         """
         return None
 
+    def nextRefill(self, time):
+        return None
+
     def generateEvents(self, until):
         """
         Compute the events for a simulation until the given time.
@@ -108,7 +111,7 @@ class PollingServer(Server):
         Server.__init__(self)
         self.period = period
         self.capacity = capacity
-        self.current = 0
+        self.current = capacity
         self.priority = 1.0/float(period)
 
     def setCapacity(self, value):
@@ -119,6 +122,9 @@ class PollingServer(Server):
         self.stats["cvalues"].append(value)
 
         self.current = value
+
+    def nextRefill(self, time):
+        return Event(Event.REFILL, time + self.period)
 
     def generateEvents(self, until):
         events = list()
@@ -179,6 +185,7 @@ class PollingServer(Server):
 
 class DeferrableServer(PollingServer):
     def advance(self, since, until):
+        self.time = until
         if self.state == Server.ACTIVE:
             self.setCapacity(self.current - (until - since))
             self.setState(Server.WAITING)
