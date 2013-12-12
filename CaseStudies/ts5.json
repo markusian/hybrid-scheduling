@@ -1,0 +1,1 @@
+{"periodics": [{"period": 760, "id": "H1", "wcet": 95.0}, {"period": 471, "id": "H2", "wcet": 58.875}, {"period": 362, "id": "H3", "wcet": 45.25}, {"period": 512, "id": "H4", "wcet": 64.0}, {"period": 479, "id": "H5", "wcet": 59.875}, {"period": 988, "id": "H6", "wcet": 123.5}, {"period": 578, "id": "H7", "wcet": 72.25}, {"period": 692, "id": "H8", "wcet": 86.5}]}
