@@ -19,11 +19,11 @@ APERIODIC_EXECUTION_TIME = [0.02, 0.04]
 def getxy(li,pload):
     ordered = OrderedDict(sorted(li.items()))
 
-    x = [float(i)+pload for i in ordered.keys()]
+    x = [float(i) for i in ordered.keys()]
     y = [float(i) for i in ordered.values()]
     return x,y
 
-indexes = [1,3]
+indexes = [11]
 
 for i in indexes:
     fi = open(OUTPUT_FOLDER + "ts" + str(i) + ".json")
@@ -33,17 +33,19 @@ for i in indexes:
         for apex in APERIODIC_EXECUTION_TIME:
 
             fa = di[str(pload)][str(apex)]
-            li_def, li_pol = fa['def'], fa['pol']
+            li_def, li_pol, li_bac = fa['def'], fa['pol'], fa['bac']
 
             x_def, y_def = getxy(li_def,pload)
             x_pol, y_pol = getxy(li_pol,pload)
+            x_bac, y_bac = getxy(li_bac,pload)
             plt.figure()
             plt.ylabel("Average Aperiodic Response Time")
-            plt.xlabel("Total Load")
-            plt.yscale('log')
+            plt.xlabel("Average Aperiodic Load")
+            #plt.yscale('log')
             plt.xlim(min(x_def),max(x_def))
             plt.plot(x_def,y_def,'-s',label="Deferrable")
             plt.plot(x_pol,y_pol,'-o',label="Polling")
+            plt.plot(x_bac,y_bac,'-+',label="Background")
             plt.legend()
             name = "ts" + str(i) + "_" + str(pload) + "_" + str(apex)
             plt.savefig(IMAGES_FOLDER + name  + ".pdf")

@@ -9,7 +9,7 @@ from copy import deepcopy
 from time import time
 
 OUTPUT_FOLDER = "results_q1/"
-filename = '../CaseStudies/ts12.json'
+filename = '../CaseStudies/ts11.json'
 
 PERIODIC_LOADS = [0.20, 0.40]
 MAX_TOTAL_LOAD = 0.60 #maximum total load considered
@@ -17,8 +17,25 @@ MIN_AP_LOAD = 0.01 #minimum aperiodic load
 NUM_POINTS = 10 # number of points to consider for the aperiodic load range
 MAX_AP_LOAD = 0.30
 
+
+def computeAverage(filename):
+    fi = open(filename, 'r')
+    somma = 0.0
+    n = 0.0
+    lines = fi.readlines()[3:-3]
+    for line in lines:
+        line_split = line.split('|')
+        if line.split[1] == '  SOFT':
+            n = n+1
+            somma = somma + (float(line_split[4] - float(line_split[2])))
+    return somma/n
+
+
+
+
 def simulationLoop(server, capacity, period, scaled, ex_time, int_time):
-        s = Simulator()
+        filename = server + ".csv"
+        s = Simulator(stats = filename)
 
         # Set the server
         if server == 'polling':
@@ -85,6 +102,7 @@ for p_load in PERIODIC_LOADS:
     util_def = DeferrableServer.util2(p_load)
 
     period = 18
+    #period = min([t.period for t in scaled])*1
     capacity = util * period
     capacity_def = util_def * period
 

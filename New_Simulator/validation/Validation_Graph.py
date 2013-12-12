@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 OUTPUT_FOLDER = "results_q1/"
 IMAGES_FOLDER = OUTPUT_FOLDER + "images/"
 
-PERIODIC_LOADS = [0.20, 0.40]
+PERIODIC_LOADS = [0.68]
+
 
 
 def getxy(li,pload):
@@ -36,16 +37,19 @@ for i in indexes:
         x_def, y_def = getxy(li_def,pload)
         x_pol, y_pol = getxy(li_pol,pload)
         x_bac, y_bac = getxy(li_bac,pload)
+
+        ds_red = [float(y_def[j])/y_bac[j] for j in range(len(y_bac))]
+        ps_red = [float(y_pol[j])/y_bac[j] for j in range(len(y_bac))]
         plt.figure()
-        plt.ylabel("Average Aperiodic Response Time")
-        plt.xlabel("Average Aperiodic Load")
+        plt.ylabel("Average response time with respect to Background")
+        plt.xlabel("Average aperiodic load")
+        plt.title(r'$ U_p = 0.69$,  $U_{PS} = 24.8\%$,  $U_{DS} = 23.9\% $')
         #plt.yscale('log')
         plt.xlim(min(x_def),max(x_def))
-        plt.plot(x_def,y_def,'-s',label="Deferrable")
-        plt.plot(x_pol,y_pol,'-o',label="Polling")
-        plt.plot(x_bac,y_bac,'-+',label="Background")
-        plt.legend(loc = 'upper left')
-        name = "ts" + str(i) + "_" + str(pload)
+        plt.plot(x_def,ds_red,'-s',label="Deferrable")
+        plt.plot(x_pol,ps_red,'-o',label="Polling")
+        plt.legend(loc='upper left')
+        name = "validation_2"
         plt.savefig(IMAGES_FOLDER + name  + ".pdf")
         plt.savefig(IMAGES_FOLDER + name  + ".png")
 

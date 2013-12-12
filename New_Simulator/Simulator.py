@@ -14,9 +14,9 @@ import csv
 #logging.basicConfig(level = logging.DEBUG)
 
 class Simulator(object):
-    def __init__(self, 
-            stats = None, 
-            render = False) :
+    def __init__(self,
+            stats = None,
+            render = None) :
         self.waiting = PriorityQueue()
         self.server = Server()
         self.active = None
@@ -65,7 +65,7 @@ class Simulator(object):
         """
         if self.active is not None:
             self.active.advance(self.clock, time)
-            
+
         self.server.advance(self.clock, time)
 
         self.clock = time
@@ -148,7 +148,7 @@ class Simulator(object):
         """
 
         logging.debug("Initialization until " + str(until))
-        
+
         if (until == -1):
             until = PeriodicTask.lcm(self.tasks)
 
@@ -167,8 +167,8 @@ class Simulator(object):
         while next.time < self.until:
             self.advance(next.time)
 
-            logging.debug(str(self.clock) + ": Event " + next.type + " " 
-                          + (next.instance.task.id 
+            logging.debug(str(self.clock) + ": Event " + next.type + " "
+                          + (next.instance.task.id
                               if next.instance is not None else ""))
 
             if next.type == Event.ARRIVAL:
@@ -194,28 +194,28 @@ class Simulator(object):
         Write the results to a file.
         """
         col = 6
-        
+
         # Write some comments on the head of the file
         width = 9*(col + 1)
 
         self.stats_file.write("Simulator results")
 
         today = date.today()
-        self.stats_file.write(("Date : " + 
-                    str(today.day) + "/" + 
-                    str(today.month) + "/" + 
+        self.stats_file.write(("Date : " +
+                    str(today.day) + "/" +
+                    str(today.month) + "/" +
                     str(today.year) + "\n").rjust(width - 17))
         self.stats_file.write("\n")
 
         # Write the table headers
         self.stats_writer.writerow(["id"[0:col].center(col),
-                         "type"[0:col].center(col), 
-                         "arrival"[0:col].center(col), 
+                         "type"[0:col].center(col),
+                         "arrival"[0:col].center(col),
                          "start"[0:col].center(col),
-                         "finish"[0:col].center(col), 
+                         "finish"[0:col].center(col),
                          "computation"[0:col].center(col),
                          "idle"[0:col].center(col),
-                         "deadline"[0:col].center(col), 
+                         "deadline"[0:col].center(col),
                          "TTD"[0:col].center(col)])
 
     def write_instance(self, instance):
@@ -235,15 +235,16 @@ class Simulator(object):
         width = 9*(col + 1)
         self.stats_file.write(("Runtime : " + str(self.clock) + "\n").rjust(width))
 
-        self.stats_file.write("Server : " + 
+        self.stats_file.write("Server : " +
                     str(self.server.__class__.__name__))
         self.stats_file.write("\n")
 
         if isinstance(self.server, PollingServer):
-            self.stats_file.write("Capacity : " + 
+            self.stats_file.write("Capacity : " +
                         str(self.server.capacity) +
-                        " Period : " + 
+                        " Period : " +
                         str(self.server.period) + "\n")
+        self.stats_file.close()
 
 
 
@@ -267,7 +268,7 @@ class Simulator(object):
 
         plt.yticks(y_pos, [key for key in self.render_data])
 
-        print self.server.stats["ctimes"]
+        #print self.server.stats["ctimes"]
 
         plt.subplot('312')
         plt.plot(self.server.stats["ctimes"], self.server.stats["cvalues"])
@@ -275,7 +276,7 @@ class Simulator(object):
         plt.subplot('313')
         plt.plot(self.server.stats["itimes"], self.server.stats["ivalues"])
         plt.savefig(self.render_file)
-        
+
 if __name__ == '__main__':
     s = Simulator(stats = "results.csv", render = "results.svg")
     s.read("polling.json")
