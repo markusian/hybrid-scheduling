@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 OUTPUT_FOLDER = "results_q1/"
 IMAGES_FOLDER = OUTPUT_FOLDER + "images/"
 
-PERIODIC_LOADS = [0.20, 0.40]
+PERIODIC_LOADS = [0.20, 0.40, 0.60]
 
 
 def getxy(li,pload):

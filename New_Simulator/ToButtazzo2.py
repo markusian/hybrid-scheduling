@@ -11,12 +11,12 @@ from time import time
 OUTPUT_FOLDER = "results_q1/"
 filename = '../CaseStudies/ts11.json'
 
-PERIODIC_LOADS = [0.20, 0.40]
+PERIODIC_LOADS = [0.20, 0.40, 0.60]
 MAX_TOTAL_LOAD = 0.60 #maximum total load considered
 MIN_AP_LOAD = 0.01 #minimum aperiodic load
-NUM_POINTS = 10 # number of points to consider for the aperiodic load range
-MAX_AP_LOAD = 0.30
-until = 30000
+NUM_POINTS = 9 # number of points to consider for the aperiodic load range
+MAX_AP_LOAD = 0.20
+until = 100000
 
 
 def computeAverage(filename):
@@ -133,9 +133,8 @@ for p_load in PERIODIC_LOADS:
         res[p_load]['bac'][ap_load] = avb[0]
 
         print "POL: " +str(avp[0]) + "\tDEF: " +str(avd[0]) + "\tBAC: " +str(avb[0])
-        print "MEAN EX --- POL: " +str(avp[1]) + "\tDEF: " +str(avd[1]) + "\tBAC: " +str(avb[1])
+        #print "MEAN EX --- POL: " +str(avp[1]) + "\tDEF: " +str(avd[1]) + "\tBAC: " +str(avb[1])
         sys.exit()
-
 
 
 
