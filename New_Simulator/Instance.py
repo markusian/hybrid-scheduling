@@ -62,3 +62,7 @@ class Instance(object):
 
         if self.finish > self.deadline:
             logging.warning("Deadline miss !")
+            raise DeadLineException()
+
+class DeadLineException(Exception):
+    pass
