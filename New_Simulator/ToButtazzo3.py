@@ -4,19 +4,23 @@ from numpy import arange, linspace
 from Task import PeriodicTask, AperiodicTask
 from Server import PollingServer, DeferrableServer, BackgroundServer
 from Simulator import Simulator
-from Instance import Instance
+from Instance import Instance, DeadLineException
 from copy import deepcopy
 from time import time
+from numpy import arange
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 OUTPUT_FOLDER = "results_q1/"
-filename = '../CaseStudies/ts11.json'
+filename = '../CaseStudies/ts2.json'
 
-PERIODIC_LOADS = [0.20, 0.40, 0.60]
+PERIODIC_LOADS = arange(0.1, 0.8, 0.1)
 MAX_TOTAL_LOAD = 0.60 #maximum total load considered
 MIN_AP_LOAD = 0.01 #minimum aperiodic load
 NUM_POINTS = 9 # number of points to consider for the aperiodic load range
-MAX_AP_LOAD = 0.20
-until = 1000
+MAX_AP_LOAD = 0.70
+until = 2500000
 
 
 def computeAverage(filename):
@@ -78,6 +82,10 @@ taskset = list()
 periodics = data["periodics"]
 for t in periodics:
     taskset.append(PeriodicTask(t["id"], t["wcet"], t["period"]))
+    
+res = dict()
+res["polling"] = list()
+res["deferrable"] = list()
 
 for p_load in PERIODIC_LOADS:
     res[p_load] = dict()
@@ -110,41 +118,66 @@ for p_load in PERIODIC_LOADS:
 
 
     if util_def <= 0 or util_def > 1.0:
-        print "Error!!!! ", capacity_def
-        raise Exception("Problem with deferrable server")
+        util_def = 0
 
 
 
     APERIODIC_LOAD = linspace(MIN_AP_LOAD, MAX_AP_LOAD, NUM_POINTS)
 
-    for ap_load in APERIODIC_LOAD:
-        int_time = 18
-        ex_time = int_time * ap_load
+    ap_load = 0.95 - p_load
+    int_time = 18
+    ex_time = int_time * ap_load
 
-        print "\nAPERIODIC LOAD: " + str(ap_load),
-        print "\t\tEXECUTION TIME: " + str(ex_time)
-        min_util = util
-        max_util = 1.0
+    print "\nAPERIODIC LOAD: " + str(ap_load),
+    print "\t\tEXECUTION TIME: " + str(ex_time)
+    min_util = util
+    max_util = 1.0
+    cur = min_util
 
-        while max_util - min_util > 0.01:
-            try :
-                avp = simulationLoop('polling', capacity, period, scaled, ex_time, int_time)
-                min_util = (max_util - min_util) / 2
-            except DeadLineException:
-                max_util = (max_util - min_util) / 2
-        print "RESULT" + min_util
-        res[p_load]['pol'][ap_load] = avp[0]
+    while max_util - min_util > 0.01:
+        try :
+            capacity = cur * period
+            for i in range(0,5):
+                simulationLoop('polling', capacity, period, scaled, ex_time, int_time)
+            min_util = (max_util + min_util) / 2
+            cur = min_util
+        except DeadLineException:
+            max_util = (max_util + min_util) / 2
+            cur = max_util
+    print "Polling : " + str(min_util)
+    res["polling"].append(min_util)
+    
+    min_util = util_def
+    max_util = 1.0
+    cur = min_util
+    while max_util - min_util > 0.01:
+        try :
+            capacity = cur * period
+            avp = simulationLoop('deferrable', capacity, period, scaled, ex_time, int_time)
+            min_util = (max_util + min_util) / 2
+            cur = min_util
+        except DeadLineException:
+            max_util = (max_util + min_util) / 2
+            cur = max_util
+    print "Deferrable : " + str(min_util)
+    res["deferrable"].append(min_util)
+    #res[p_load]['pol'][ap_load] = avp[0]
 
-        avd = simulationLoop('deferrable', capacity_def, period, scaled, ex_time, int_time)
-        res[p_load]['def'][ap_load] = avd[0]
+    #avd = simulationLoop('deferrable', capacity_def, period, scaled, ex_time, int_time)
+    #res[p_load]['def'][ap_load] = avd[0]
 
-        avb = simulationLoop('background', capacity, period, scaled, ex_time, int_time)
-        res[p_load]['bac'][ap_load] = avb[0]
+    #avb = simulationLoop('background', capacity, period, scaled, ex_time, int_time)
+    #res[p_load]['bac'][ap_load] = avb[0]
 
-        print "POL: " +str(avp[0]) + "\tDEF: " +str(avd[0]) + "\tBAC: " +str(avb[0])
+    #print "POL: " +str(avp[0]) + "\tDEF: " +str(avd[0]) + "\tBAC: " +str(avb[0])
 
 
 
 print "ELAPSED TIME: ",  time() - start
-fi = open(OUTPUT_FOLDER + filename.split('/')[-1].split('\\')[-1],'w')
+fi = open("bounds3.json",'w')
 json.dump(res,fi)
+
+plt.plot(PERIODIC_LOADS, res["polling"], "g")
+plt.plot(PERIODIC_LOADS, res["deferrable"], "b")
+
+plt.savefig("bounds3.svg")
