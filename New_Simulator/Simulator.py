@@ -219,7 +219,7 @@ class Simulator(object):
                          "TTD"[0:col].center(col)])
 
     def write_instance(self, instance):
-        col = 8
+        col = 10
         self.stats_writer.writerow([instance.task.id[0:col].rjust(col),
                          instance.type[0:col].rjust(col),
                          str(instance.arrival)[0:col].rjust(col),

@@ -15,7 +15,7 @@ PERIODIC_LOADS = [0.20, 0.40]
 MIN_AP_LOAD = 0.01 #minimum aperiodic load
 NUM_POINTS = 9 # number of points to consider for the aperiodic load range
 MAX_AP_LOAD = 0.20
-until = 400000
+until = 500000
 
 
 def computeAverage(filename):
@@ -66,65 +66,74 @@ def simulationLoop(server, capacity, period, scaled, ex_time, int_time):
 
         return computeAverage(name)
 
-res = dict()
-start = time()
-file = open(filename, 'rb')
-data = json.load(file)
-taskset = list()
-periodics = data["periodics"]
-for t in periodics:
-    taskset.append(PeriodicTask(t["id"], t["wcet"], t["period"]))
+for i in range(1,11):
+    print '\n'
 
-for p_load in PERIODIC_LOADS:
-    res[p_load] = dict()
+    print '-'*60
+    print "TASK SET N. " + str(i)
+    print '-'*60, '\n'
 
-    # Scale the task set
-    scaled = deepcopy(list(taskset))
-    for t in scaled:
-        t.wcet = t.wcet * p_load
+    filename = '../CaseStudies/ts'+ str(i) +'.json'
 
-    # Compute the execution time
-    #until = PeriodicTask.lcm(scaled)*NUM_HYPERPERIODS
-    print "HYPERPERIOD", PeriodicTask.lcm(scaled)
-    res[p_load]['pol'] = dict()
-    res[p_load]['def'] = dict()
-    res[p_load]['bac'] = dict()
+    res = dict()
+    start = time()
+    file = open(filename, 'rb')
+    data = json.load(file)
+    taskset = list()
+    periodics = data["periodics"]
+    for t in periodics:
+        taskset.append(PeriodicTask(t["id"], t["wcet"], t["period"]))
 
-    # Compute variables for the server
-    util = PollingServer.util(p_load)
-    util_def = DeferrableServer.util2(p_load)
+    for p_load in PERIODIC_LOADS:
+        res[p_load] = dict()
 
-    period = 18
-    #period = min([t.period for t in scaled])*1
-    capacity = util * period
-    capacity_def = util_def * period
+        # Scale the task set
+        scaled = deepcopy(list(taskset))
+        for t in scaled:
+            t.wcet = t.wcet * p_load
 
-    print "\nPERIODIC LOAD: " + str(p_load),
-    print "\tUTIL POLLING: " + str(util),
-    print "\tUTIL DEFERRABLE: " + str(util_def)
-    print "*"*40
+        # Compute the execution time
+        #until = PeriodicTask.lcm(scaled)*NUM_HYPERPERIODS
+        #print "HYPERPERIOD", PeriodicTask.lcm(scaled)
+        res[p_load]['pol'] = dict()
+        res[p_load]['def'] = dict()
+        res[p_load]['bac'] = dict()
 
-    APERIODIC_LOAD = linspace(MIN_AP_LOAD, MAX_AP_LOAD, NUM_POINTS)
+        # Compute variables for the server
+        util = PollingServer.util(p_load)
+        util_def = DeferrableServer.util2(p_load)
 
-    for ap_load in APERIODIC_LOAD:
-        int_time = 18
-        ex_time = int_time * ap_load
+        period = 18
+        #period = min([t.period for t in scaled])*1
+        capacity = util * period
+        capacity_def = util_def * period
 
-        print "\nAPERIODIC LOAD: " + str(ap_load),
-        print "\t\tEXECUTION TIME: " + str(ex_time)
-        avp = simulationLoop('polling', capacity, period, scaled, ex_time, int_time)
-        res[p_load]['pol'][ap_load] = avp[0]
+        print "\nPERIODIC LOAD: " + str(p_load),
+        print "\tUTIL POLLING: " + str(util),
+        print "\tUTIL DEFERRABLE: " + str(util_def)
+        print "*"*40
 
-        avd = simulationLoop('deferrable', capacity_def, period, scaled, ex_time, int_time)
-        res[p_load]['def'][ap_load] = avd[0]
+        APERIODIC_LOAD = linspace(MIN_AP_LOAD, MAX_AP_LOAD, NUM_POINTS)
 
-        avb = simulationLoop('background', capacity, period, scaled, ex_time, int_time)
-        res[p_load]['bac'][ap_load] = avb[0]
+        for ap_load in APERIODIC_LOAD:
+            int_time = 18
+            ex_time = int_time * ap_load
 
-        print "POL: " +str(avp[0]) + "\tDEF: " +str(avd[0]) + "\tBAC: " +str(avb[0])
+            print "\nAPERIODIC LOAD: " + str(ap_load),
+            print "\t\tEXECUTION TIME: " + str(ex_time)
+            avp = simulationLoop('polling', capacity, period, scaled, ex_time, int_time)
+            res[p_load]['pol'][ap_load] = avp[0]
+
+            avd = simulationLoop('deferrable', capacity_def, period, scaled, ex_time, int_time)
+            res[p_load]['def'][ap_load] = avd[0]
+
+            avb = simulationLoop('background', capacity, period, scaled, ex_time, int_time)
+            res[p_load]['bac'][ap_load] = avb[0]
+
+            print "POL: " +str(avp[0]) + "\tDEF: " +str(avd[0]) + "\tBAC: " +str(avb[0])
 
 
 
-print "ELAPSED TIME: ",  time() - start
-fi = open(OUTPUT_FOLDER + filename.split('/')[-1].split('\\')[-1],'w')
-json.dump(res,fi)
+    print "ELAPSED TIME: ",  time() - start
+    fi = open(OUTPUT_FOLDER + filename.split('/')[-1].split('\\')[-1],'w')
+    json.dump(res,fi)
