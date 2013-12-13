@@ -137,3 +137,4 @@ for i in range(1,11):
     print "ELAPSED TIME: ",  time() - start
     fi = open(OUTPUT_FOLDER + filename.split('/')[-1].split('\\')[-1],'w')
     json.dump(res,fi)
+
