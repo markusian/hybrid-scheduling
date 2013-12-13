@@ -1,7 +1,0 @@
-#tasktype,id,wcet,period,firstArrivalTime,interarrivalTime,priority
-hard,H1,1,4,0,,
-hard,H2,2,6,0,,
-soft,S1,2,,2,100,1
-soft,S2,1,,8,100,1
-soft,S3,2,,12,100,1
-soft,S4,1,,19,100,1

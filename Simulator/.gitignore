@@ -1,4 +1,0 @@
-#We don't want compiled python files
-*.py[cod]
-*~
-results.csv
